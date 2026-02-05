@@ -1,0 +1,3183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Rally Manager">
+  <meta name="mobile-web-app-capable" content="yes">
+  <title>Caravan Club Rally Manager</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f5f7fb;
+      line-height: 1.6;
+    }
+
+    header {
+      background: linear-gradient(135deg, #1f4fa8 0%, #2d6bb8 100%);
+      color: white;
+      padding: 15px 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    header h1 {
+      margin: 0 0 12px 0;
+      font-size: 1.8em;
+    }
+
+    nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      width: 100%;
+    }
+
+    nav button {
+      padding: 10px 16px;
+      border: none;
+      background: #ffffff;
+      color: #1f4fa8;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.95em;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      flex-shrink: 0; /* Prevent buttons from shrinking */
+    }
+
+    nav button:hover {
+      background: #e8f0fe;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+
+    main {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 30px 20px;
+    }
+
+    section h2 {
+      color: #1f4fa8;
+      border-bottom: 3px solid #1f4fa8;
+      padding-bottom: 10px;
+      margin-top: 0;
+    }
+
+    section h3 {
+      color: #333;
+      margin-top: 30px;
+      margin-bottom: 15px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .helpText {
+      background: #e8f4f8;
+      border-left: 4px solid #2196F3;
+      padding: 12px 16px;
+      margin: 15px 0;
+      border-radius: 4px;
+      color: #0d47a1;
+      font-size: 0.95em;
+    }
+
+    .helpInline {
+      color: #666;
+      font-size: 0.85em;
+      font-style: italic;
+      margin-left: 8px;
+    }
+
+    .required {
+      color: #d32f2f;
+      font-weight: bold;
+    }
+
+    .formBox {
+      background: white;
+      padding: 25px;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      margin-bottom: 30px;
+    }
+
+    .formRow {
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .formRow label {
+      display: inline-block;
+      width: 180px;
+      font-weight: 500;
+      color: #333;
+      flex-shrink: 0;
+    }
+
+    .formRow input,
+    .formRow select {
+      flex: 1;
+      min-width: 200px;
+      padding: 10px 12px;
+      border: 2px solid #ddd;
+      border-radius: 6px;
+      font-size: 1em;
+      transition: border-color 0.2s ease;
+    }
+
+    .formRow input:focus,
+    .formRow select:focus {
+      outline: none;
+      border-color: #2196F3;
+      box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+    }
+
+    button {
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary {
+      background: #2196F3;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 6px;
+      font-size: 1em;
+      font-weight: 600;
+      box-shadow: 0 2px 6px rgba(33, 150, 243, 0.3);
+    }
+
+    .btn-primary:hover {
+      background: #1976D2;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4);
+    }
+
+    .btn-secondary {
+      background: #757575;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.95em;
+      font-weight: 500;
+    }
+
+    .btn-secondary:hover {
+      background: #616161;
+    }
+
+    .btn-edit {
+      background: #4CAF50;
+      color: white;
+      padding: 6px 14px;
+      border: none;
+      border-radius: 4px;
+      font-size: 0.9em;
+      margin-right: 5px;
+    }
+
+    .btn-edit:hover {
+      background: #45a049;
+    }
+
+    .btn-delete {
+      background: #f44336;
+      color: white;
+      padding: 6px 14px;
+      border: none;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+
+    .btn-delete:hover {
+      background: #d32f2f;
+    }
+
+    .btn-restore {
+      background: #FF9800;
+      color: white;
+      padding: 6px 14px;
+      border: none;
+      border-radius: 4px;
+      font-size: 0.9em;
+    }
+
+    .btn-restore:hover {
+      background: #F57C00;
+    }
+
+    .tableWrapper {
+      overflow-x: auto;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      margin-bottom: 20px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
+
+    th {
+      background: linear-gradient(135deg, #1f4fa8 0%, #2d6bb8 100%);
+      color: white;
+      padding: 14px 12px;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    tr:hover {
+      background-color: #f5f5f5;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .dashboardGrid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .dashCard {
+      background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+      padding: 20px;
+      border-radius: 10px;
+      border: 2px solid #e3e8f8;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .dashCard:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    }
+
+    .dashCard h3 {
+      margin: 0 0 12px 0;
+      color: #1f4fa8;
+      font-size: 1em;
+      font-weight: 600;
+    }
+
+    .dashCard p {
+      margin: 0;
+      font-size: 1.5em;
+      font-weight: 700;
+      color: #333;
+      line-height: 1.3;
+    }
+
+    .quickLinks {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .quickLinks button {
+      background: white;
+      color: #1f4fa8;
+      padding: 14px 20px;
+      border: 2px solid #1f4fa8;
+      border-radius: 6px;
+      font-weight: 600;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    .quickLinks button:hover {
+      background: #1f4fa8;
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(31, 79, 168, 0.3);
+    }
+
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    .modalContent {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      min-width: 400px;
+      max-width: 90%;
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+    }
+
+    .modalContent h3 {
+      margin-top: 0;
+      color: #1f4fa8;
+      border-bottom: 2px solid #e3e8f8;
+      padding-bottom: 10px;
+    }
+
+    #globalMessage {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 16px 24px;
+      border-radius: 8px;
+      font-weight: 600;
+      z-index: 2000;
+      min-width: 300px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+      transition: opacity 0.3s ease;
+    }
+
+    .message-success {
+      background: #4CAF50;
+      color: white;
+    }
+
+    .message-error {
+      background: #f44336;
+      color: white;
+    }
+
+    .message-info {
+      background: #2196F3;
+      color: white;
+    }
+
+    footer {
+      background: white;
+      border-top: 2px solid #e0e0e0;
+      margin-top: 40px;
+    }
+
+    footer a {
+      color: #1f4fa8;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    @media print {
+      /* Hide all navigation and UI elements */
+      header, nav, footer, button, .quickLinks, .helpText, .formRow, .formBox {
+        display: none !important;
+      }
+      
+      /* Only show sections that are currently visible (not hidden) */
+      section.hidden {
+        display: none !important;
+      }
+      
+      /* Clean up page appearance with REDUCED margins for more width */
+      body {
+        background: white;
+        margin: 0;
+        padding: 5mm; /* Reduced from 10mm to 5mm */
+      }
+      
+      main {
+        padding: 0;
+        max-width: 100%;
+      }
+      
+      h2 {
+        display: none !important;
+      }
+      
+      /* Make sure report headers and tables show properly */
+      .reportHeader {
+        page-break-inside: avoid;
+      }
+      
+      /* Compact table styling for printing */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 9pt;
+        page-break-inside: auto;
+      }
+      
+      table th {
+        background: #1f4fa8 !important;
+        color: white !important;
+        padding: 6px 8px !important;
+        font-weight: bold !important;
+        border: none !important;
+        font-size: 10pt !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      
+      table td {
+        padding: 5px 8px !important;
+        border-bottom: 1px solid #e0e0e0 !important;
+        border-left: none !important;
+        border-right: none !important;
+        font-size: 9pt !important;
+      }
+      
+      table tr {
+        page-break-inside: avoid;
+      }
+      
+      /* Remove thick borders between rows */
+      table tr:last-child td {
+        border-bottom: none !important;
+      }
+      
+      /* Ensure colored backgrounds print */
+      .reportHeader div {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+      }
+      
+      /* More compact spacing */
+      .reportHeader {
+        margin-bottom: 10px !important;
+      }
+      
+      .reportHeader h1 {
+        margin: 3px 0 !important;
+      }
+      
+      .reportHeader div {
+        margin-bottom: 3px !important;
+      }
+      
+      /* NOMINATION LIST - Ultra compact for single page printing */
+      #nominationListSection {
+        margin-left: 35mm !important;
+      }
+      
+      #nominationListSection table#nominationTable {
+        font-size: 8pt !important;
+      }
+      
+      #nominationListSection table#nominationTable th {
+        padding: 4px 6px !important;
+        font-size: 9pt !important;
+      }
+      
+      #nominationListSection table#nominationTable td {
+        padding: 2px 4px !important;
+        border: none !important;
+        font-size: 8pt !important;
+        line-height: 1.1 !important;
+      }
+      
+      #nominationListSection #nominationHeader > div {
+        margin: 3px 0 5px 0 !important;
+        padding: 8px !important;
+      }
+      
+      #nominationListSection #nominationHeader img {
+        max-height: 40px !important;
+      }
+      
+      #nominationListSection #nominationHeader div {
+        line-height: 1.1 !important;
+        margin-bottom: 2px !important;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .formRow {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .formRow label {
+        width: 100%;
+        margin-bottom: 5px;
+      }
+      .formRow input, .formRow select {
+        width: 100%;
+      }
+    }
+
+    /* Additional Mobile Optimizations */
+    @media (max-width: 768px) {
+      /* Mobile Header */
+      header {
+        position: sticky;
+        top: 0;
+        z-index: 1000;
+      }
+      
+      header h1 {
+        font-size: 1.3em;
+      }
+      
+      /* Make navigation scrollable if needed */
+      nav {
+        max-height: none;
+        overflow-x: auto;
+        overflow-y: visible;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 5px;
+      }
+      
+      /* Larger touch targets for mobile */
+      nav button {
+        padding: 14px 18px;
+        font-size: 1em;
+        min-height: 44px; /* Apple's minimum touch target */
+        white-space: nowrap; /* Prevent button text from wrapping */
+      }
+      
+      /* Mobile navigation - stack buttons vertically on very small screens */
+      @media (max-width: 480px) {
+        nav {
+          flex-direction: column;
+          overflow-x: visible;
+        }
+        nav button {
+          width: 100%;
+        }
+      }
+      
+      /* Reduce padding on mobile */
+      main {
+        padding: 15px 10px;
+      }
+      
+      /* Make tables scrollable horizontally on mobile */
+      .tableWrapper {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+      }
+      
+      /* Larger form inputs for mobile */
+      input[type="text"],
+      input[type="email"],
+      input[type="number"],
+      input[type="date"],
+      select,
+      textarea {
+        font-size: 16px !important; /* Prevents zoom on iOS */
+        min-height: 44px;
+        padding: 10px;
+      }
+      
+      /* Larger checkboxes for touch */
+      input[type="checkbox"] {
+        width: 24px;
+        height: 24px;
+        cursor: pointer;
+      }
+      
+      /* Mobile-friendly buttons */
+      .btn-primary,
+      .btn-secondary,
+      .btn-delete,
+      .btn-warning {
+        min-height: 44px;
+        padding: 12px 20px;
+        font-size: 1em;
+      }
+      
+      /* Better modal on mobile */
+      .modal {
+        padding: 10px;
+      }
+      
+      .modalContent {
+        width: 95%;
+        max-width: 95%;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+      
+      /* Radio buttons for view filter - stack on small screens */
+      @media (max-width: 480px) {
+        #attendeeCheckboxList > div:first-child {
+          flex-direction: column;
+          align-items: flex-start;
+        }
+        #attendeeCheckboxList > div:first-child label {
+          margin: 5px 0;
+          font-size: 1em;
+        }
+      }
+      
+      /* Make help text more readable on mobile */
+      .helpText {
+        font-size: 0.9em;
+      }
+    }
+    
+    /* Landscape mobile optimizations */
+    @media (max-width: 896px) and (orientation: landscape) {
+      header {
+        padding: 10px 15px;
+      }
+      header h1 {
+        font-size: 1.2em;
+        margin-bottom: 8px;
+      }
+      main {
+        padding: 15px 10px;
+      }
+    }
+    
+    /* iOS Safari specific fixes */
+    @supports (-webkit-touch-callout: none) {
+      /* Fix for iOS bottom bar */
+      body {
+        padding-bottom: env(safe-area-inset-bottom);
+      }
+      
+      /* Prevent iOS from styling buttons */
+      button, input[type="submit"], input[type="button"] {
+        -webkit-appearance: none;
+        appearance: none;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>🚐 Caravan Club Rally Manager</h1>
+    
+    <!-- Hidden file input for iOS compatibility -->
+    <input type="file" id="restoreFileInput" accept=".json,application/json" style="display: none;" onchange="handleRestoreFile(this)">
+    
+    <nav>
+      <button onclick="showSection('dashboardSection')">📊 Dashboard</button>
+      <button onclick="showSection('memberSection')">👥 Members</button>
+      <button onclick="showSection('createRallySection')">📅 Rallies</button>
+      <button onclick="showSection('attendeeSection')">✅ Attendees</button>
+      <button onclick="showSection('attendanceReportSection')">💰 Attendance Report</button>
+      <button onclick="showSection('parkReportSection')">📋 Park Report</button>
+      <button onclick="showSection('nominationListSection')">📝 Nomination List</button>
+      <button onclick="showSection('followupReportSection')">📞 Follow-up Report</button>
+      <button onclick="showSection('yearlySummarySection')">📈 Yearly Summary</button>
+      <button onclick="showSection('clubSettingsSection')">⚙️ Club Settings</button>
+      <button onclick="exportBackup()" title="Download backup file" style="background: #4CAF50; color: white;">💾 Backup</button>
+      <button onclick="document.getElementById('restoreFileInput').click()" title="Restore from backup file" style="background: #FF9800; color: white;">📂 Restore</button>
+    </nav>
+  </header>
+
+  <main>
+    <!-- DASHBOARD -->
+    <section id="dashboardSection">
+      <h2>Club Dashboard</h2>
+      <p class="helpText">Welcome! This is your overview of the club. Use the buttons below to navigate.</p>
+
+      <div class="dashboardGrid">
+        <div class="dashCard">
+          <h3>📅 Next Rally</h3>
+          <p id="dashNextRally">No rallies yet</p>
+        </div>
+
+        <div class="dashCard">
+          <h3>👥 Total Members</h3>
+          <p id="dashTotalMembers">0</p>
+        </div>
+
+        <div class="dashCard">
+          <h3 id="dashAttendanceTitle">📊 Attendance This Rally</h3>
+          <p id="dashAttendanceRally">0</p>
+        </div>
+
+        <div class="dashCard">
+          <h3 id="dashFeesTitle">💰 Projected Fees</h3>
+          <p id="dashProjectedFees">$0.00</p>
+        </div>
+      </div>
+
+      <!-- Rally Selector for Dashboard -->
+      <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0;">
+        <label style="font-weight: bold; margin-right: 10px;">View Rally Details:</label>
+        <select id="dashboardRallySelector" onchange="updateDashboardForRally()" style="padding: 8px; font-size: 1em; min-width: 300px;">
+          <option value="">-- Select Rally --</option>
+        </select>
+        <span class="helpText" style="margin-left: 15px;">Select a rally to see its attendance and fees</span>
+      </div>
+
+      <h3>Quick Actions</h3>
+      <div class="quickLinks">
+        <button onclick="showSection('memberSection')">➕ Add New Member</button>
+        <button onclick="showSection('createRallySection')">➕ Create New Rally</button>
+        <button onclick="showSection('attendeeSection')">✅ Add Rally Attendees</button>
+        <button onclick="exportBackup()">💾 Download Backup</button>
+      </div>
+
+      <div id="backupStatus" style="margin-top: 20px; padding: 15px; border-radius: 6px; text-align: center; font-weight: bold;"></div>
+    </section>
+
+    <!-- MEMBERSHIP MANAGEMENT -->
+    <section id="memberSection" class="hidden">
+      <h2>👥 Membership Management</h2>
+      <p class="helpText">Add new members or edit existing ones. Members can then be added to rallies.</p>
+
+      <div class="formBox">
+        <h3>Add New Member</h3>
+        
+        <div style="margin-bottom: 20px;">
+          <button onclick="importCSV()" class="btn-secondary">📄 Import Members from CSV</button>
+          <button onclick="exportMembersCSV()" class="btn-secondary">💾 Export Members to CSV</button>
+          <button onclick="fixAllPhoneNumbers()" class="btn-secondary" title="Add missing leading zeros to phone numbers">🔧 Fix Phone Numbers</button>
+          <button onclick="fixMemberIDs()" class="btn-secondary" style="background: #ff6b6b; color: white;" title="Fix broken member IDs from CSV import">🆘 Fix Member IDs</button>
+        </div>
+        
+        <div class="formRow">
+          <label>Name: <span class="required">*</span></label>
+          <input type="text" id="memName" placeholder="e.g., John Smith">
+        </div>
+        <div class="formRow">
+          <label>Adult (1 or 2):</label>
+          <input type="text" id="memAdult" placeholder="1">
+          <span class="helpInline">1 = single adult, 2 = couple</span>
+        </div>
+        <div class="formRow">
+          <label>Van (1 or 0):</label>
+          <input type="text" id="memVan" placeholder="1">
+          <span class="helpInline">1 = has van, 0 = no van</span>
+        </div>
+        <div class="formRow">
+          <label>Mobile:</label>
+          <input type="text" id="memMobile" placeholder="0412 345 678">
+        </div>
+        <div class="formRow">
+          <label>Email:</label>
+          <input type="email" id="memEmail" placeholder="john@email.com">
+        </div>
+        <div class="formRow">
+          <label>Van Length:</label>
+          <input type="text" id="memVanLength" placeholder="6.5m">
+        </div>
+        <div class="formRow">
+          <label>Postcode:</label>
+          <input type="text" id="memPostcode" placeholder="3000">
+        </div>
+        <div class="formRow">
+          <label>Notes:</label>
+          <input type="text" id="memNotes" placeholder="Personal details, dietary requirements, etc.">
+        </div>
+
+        <button onclick="addMember()" class="btn-primary">➕ Add Member</button>
+        <p class="helpText"><span class="required">*</span> Only Name is required</p>
+      </div>
+
+      <h3>Active Members</h3>
+      <div class="tableWrapper">
+        <table id="memberTable">
+          <tr>
+            <th>Name</th>
+            <th>Adult</th>
+            <th>Van</th>
+            <th>Mobile</th>
+            <th>Email</th>
+            <th>Van Length</th>
+            <th>Postcode</th>
+            <th>Notes</th>
+            <th>Actions</th>
+          </tr>
+        </table>
+      </div>
+
+      <h3>Deleted Members</h3>
+      <p class="helpText">Members who have been removed but can be restored if needed.</p>
+      <div class="tableWrapper">
+        <table id="deletedMemberTable">
+          <tr>
+            <th>Name</th>
+            <th>Mobile</th>
+            <th>Email</th>
+            <th>Date Deleted</th>
+            <th>Actions</th>
+          </tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- EDIT MEMBER MODAL -->
+    <div id="editMemberModal" class="modal hidden">
+      <div class="modalContent">
+        <h3>Edit Member Details</h3>
+        <input type="hidden" id="editMemId">
+        <div class="formRow">
+          <label>Name:</label>
+          <input type="text" id="editMemName">
+        </div>
+        <div class="formRow">
+          <label>Adult:</label>
+          <input type="text" id="editMemAdult">
+        </div>
+        <div class="formRow">
+          <label>Van:</label>
+          <input type="text" id="editMemVan">
+        </div>
+        <div class="formRow">
+          <label>Mobile:</label>
+          <input type="text" id="editMemMobile">
+        </div>
+        <div class="formRow">
+          <label>Email:</label>
+          <input type="email" id="editMemEmail">
+        </div>
+        <div class="formRow">
+          <label>Van Length:</label>
+          <input type="text" id="editMemVanLength">
+        </div>
+        <div class="formRow">
+          <label>Postcode:</label>
+          <input type="text" id="editMemPostcode">
+        </div>
+        <div class="formRow">
+          <label>Notes:</label>
+          <input type="text" id="editMemNotes">
+        </div>
+        <button onclick="saveMemberEdits()" class="btn-primary">💾 Save Changes</button>
+        <button onclick="closeEditModal()" class="btn-secondary">❌ Cancel</button>
+      </div>
+    </div>
+
+    <!-- EDIT RALLY MODAL -->
+    <div id="editRallyModal" class="modal hidden">
+      <div class="modalContent">
+        <h3>Edit Rally Details</h3>
+        <input type="hidden" id="editRallyId">
+        <div class="formRow">
+          <label>Rally Name:</label>
+          <input type="text" id="editRallyName">
+        </div>
+        <div class="formRow">
+          <label>Start Date:</label>
+          <input type="date" id="editRallyStart">
+        </div>
+        <div class="formRow">
+          <label>Finish Date:</label>
+          <input type="date" id="editRallyFinish">
+        </div>
+        <div class="formRow">
+          <label>Coordinator Name:</label>
+          <input type="text" id="editCoordName">
+        </div>
+        <div class="formRow">
+          <label>Coordinator Mobile:</label>
+          <input type="text" id="editCoordMobile">
+        </div>
+        <div class="formRow">
+          <label>Coordinator Email:</label>
+          <input type="email" id="editCoordEmail">
+        </div>
+        <button onclick="saveRallyEdits()" class="btn-primary">💾 Save Changes</button>
+        <button onclick="closeRallyEditModal()" class="btn-secondary">❌ Cancel</button>
+      </div>
+    </div>
+
+    <!-- RALLY CREATION -->
+    <section id="createRallySection" class="hidden">
+      <h2>📅 Rally Management</h2>
+      <p class="helpText">Create rallies for members to attend. Each rally has dates and a coordinator.</p>
+
+      <div class="formBox">
+        <h3>Create New Rally</h3>
+        <div class="formRow">
+          <label>Rally Name: <span class="required">*</span></label>
+          <input type="text" id="rallyName" placeholder="Summer Rally at Bright">
+        </div>
+        <div class="formRow">
+          <label>Start Date: <span class="required">*</span></label>
+          <input type="date" id="rallyStart">
+        </div>
+        <div class="formRow">
+          <label>Finish Date: <span class="required">*</span></label>
+          <input type="date" id="rallyFinish">
+        </div>
+        
+        <div style="background: #f0f8ff; padding: 15px; border-radius: 6px; margin: 15px 0;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <strong>Coordinator Details</strong>
+            <button onclick="useDefaultCoordinator()" class="btn-secondary" style="padding: 5px 15px;">📋 Use Default Coordinator</button>
+          </div>
+          <div class="formRow">
+            <label>Coordinator Name:</label>
+            <input type="text" id="coordName" placeholder="Jane Doe">
+          </div>
+          <div class="formRow">
+            <label>Coordinator Mobile:</label>
+            <input type="text" id="coordMobile" placeholder="0412 345 678">
+          </div>
+          <div class="formRow">
+            <label>Coordinator Email:</label>
+            <input type="email" id="coordEmail" placeholder="jane@email.com">
+          </div>
+          <div style="margin-top: 10px;">
+            <button onclick="saveAsDefaultCoordinator()" class="btn-secondary" style="padding: 5px 15px; font-size: 11pt;">💾 Save as Default Coordinator</button>
+            <span class="helpText" style="margin-left: 10px;">Sets these details as default for future rallies</span>
+          </div>
+        </div>
+        
+        <button onclick="createRally()" class="btn-primary">➕ Create Rally</button>
+      </div>
+
+      <h3>All Rallies</h3>
+      <div class="tableWrapper">
+        <table id="rallyTable">
+          <tr>
+            <th>Name</th>
+            <th>Start</th>
+            <th>Finish</th>
+            <th>Coordinator</th>
+            <th>Attendees</th>
+            <th>Actions</th>
+          </tr>
+        </table>
+      </div>
+    </section>
+
+    <!-- ATTENDEE ENTRY -->
+    <section id="attendeeSection" class="hidden">
+      <h2>✅ Rally Attendance</h2>
+      <p class="helpText">Select a rally, then check the box next to each attending member and enter their fees.</p>
+
+      <div style="background: white; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
+        <button onclick="showMembersList()" class="btn-secondary" style="margin-bottom: 10px;">👥 View All Members List</button>
+        <div id="membersListPopup" style="display: none; background: #f0f8ff; padding: 15px; border-radius: 6px; margin-top: 10px; max-height: 300px; overflow-y: auto;">
+          <h4 style="margin-top: 0;">All Members:</h4>
+          <ul id="membersListUL" style="columns: 2; column-gap: 20px; list-style: none; padding: 0;">
+          </ul>
+          <button onclick="document.getElementById('membersListPopup').style.display='none'" class="btn-secondary">Close</button>
+        </div>
+      </div>
+
+      <div class="formRow" style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+        <label style="font-size: 1.1em; font-weight: bold;">Select Rally:</label>
+        <select id="attendeeRally" onchange="loadAttendeeCheckboxList()" style="font-size: 1.1em;">
+          <option value="">-- Select Rally --</option>
+        </select>
+      </div>
+
+      <div id="attendeeCheckboxList" style="display:none;">
+        <div style="margin-bottom: 15px; background: white; padding: 15px; border-radius: 8px;">
+          <label style="font-weight: bold; margin-right: 10px;">View:</label>
+          <label style="margin-right: 15px;">
+            <input type="radio" name="viewFilter" value="all" checked onchange="filterAttendeeView()"> Show All Members
+          </label>
+          <label style="margin-right: 15px;">
+            <input type="radio" name="viewFilter" value="attending" onchange="filterAttendeeView()"> Show Only Attending
+          </label>
+          <label>
+            <input type="radio" name="viewFilter" value="printChecklist" onchange="filterAttendeeView()"> Print Checklist (No Fees)
+          </label>
+        </div>
+
+        <h3>Mark Attendance (check the box for attending members)</h3>
+        <div class="helpText">✅ Check = Attending | Enter fees if paid (leave blank if not paid yet)</div>
+        
+        <div class="tableWrapper">
+          <table id="attendeeCheckboxTable">
+            <tr>
+              <th style="width: 40px;">✓</th>
+              <th>Member Name</th>
+              <th style="width: 120px;">Park Fee</th>
+              <th style="width: 120px;">Other Fee</th>
+              <th style="width: 100px;">Total</th>
+            </tr>
+          </table>
+        </div>
+
+        <div style="margin-top: 20px; background: #e8f4f8; padding: 15px; border-radius: 6px;">
+          <strong>Summary:</strong> <span id="attendeeSummary">0 members attending</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ATTENDANCE REPORT -->
+    <section id="attendanceReportSection" class="hidden">
+      <h2>💰 Rally Attendance Report</h2>
+      <p class="helpText">View fees and payments for a specific rally.</p>
+      <div class="formRow">
+        <label>Select Rally:</label>
+        <select id="attendanceReportRally" onchange="loadAttendanceReport()">
+          <option value="">-- Select Rally --</option>
+        </select>
+      </div>
+      <h3 id="attendanceReportHeader"></h3>
+      <div class="tableWrapper">
+        <table id="attendanceReportTable">
+          <tr>
+            <th>Name</th>
+            <th>Park Fee</th>
+            <th>Other Fee</th>
+            <th>Total</th>
+          </tr>
+        </table>
+      </div>
+      <div id="attendanceTotals"></div>
+      <div style="margin-top: 20px;">
+        <button onclick="window.print()" class="btn-secondary">🖨️ Print Report</button>
+      </div>
+    </section>
+
+    <!-- PARK REPORT -->
+    <section id="parkReportSection" class="hidden">
+      <h2>📋 Park Report</h2>
+      <p class="helpText">View all attendee details for a rally.</p>
+      <div class="formRow">
+        <label>Select Rally:</label>
+        <select id="parkReportRally" onchange="loadParkReport()">
+          <option value="">-- Select Rally --</option>
+        </select>
+      </div>
+      <div id="parkReportHeader"></div>
+      <div class="tableWrapper">
+        <table id="parkReportTable">
+          <tr>
+            <th>Name</th>
+            <th>Adult</th>
+            <th>Van</th>
+            <th>Mobile</th>
+            <th>Email</th>
+            <th>Van Length</th>
+            <th>Postcode</th>
+          </tr>
+        </table>
+      </div>
+      <div style="margin-top: 20px;">
+        <button onclick="window.print()" class="btn-secondary">🖨️ Print Report</button>
+      </div>
+    </section>
+
+    <!-- YEARLY SUMMARY -->
+    <section id="yearlySummarySection" class="hidden">
+      <h2>📈 Yearly Summary Reports</h2>
+      <p class="helpText">View all rallies and totals for a specific year.</p>
+      <div class="formRow">
+        <label>Select Year:</label>
+        <select id="summaryYear" onchange="loadYearlySummary()">
+          <option value="">-- Select Year --</option>
+        </select>
+      </div>
+      <h3 id="summaryHeader"></h3>
+      <div class="tableWrapper">
+        <table id="yearlySummaryTable">
+          <tr>
+            <th>Rally Name</th>
+            <th>Start</th>
+            <th>Finish</th>
+            <th>Attendees</th>
+            <th>Actual Fees</th>
+            <th>Projected Fees</th>
+          </tr>
+        </table>
+      </div>
+      <div id="yearlyTotals"></div>
+      <div style="margin-top: 20px;">
+        <button onclick="window.print()" class="btn-secondary">🖨️ Print Report</button>
+      </div>
+    </section>
+
+    <!-- NOMINATION LIST -->
+    <section id="nominationListSection" class="hidden">
+      <h2>📝 Rally Nomination List</h2>
+      <p class="helpText">Print a sign-up sheet for members to indicate if they're attending a rally.</p>
+      
+      <div class="formRow">
+        <label>Select Rally:</label>
+        <select id="nominationRally" onchange="loadNominationList()">
+          <option value="">-- Select Rally --</option>
+        </select>
+      </div>
+      
+      <div id="nominationHeader"></div>
+      
+      <div class="tableWrapper">
+        <table id="nominationTable" style="border-collapse: collapse;">
+          <tr>
+            <th style="width: 60%; border-bottom: 2px solid #1f4fa8;">Member Name</th>
+            <th style="width: 20%; text-align: center; border-bottom: 2px solid #1f4fa8;">YES</th>
+            <th style="width: 20%; text-align: center; border-bottom: 2px solid #1f4fa8;">NO</th>
+          </tr>
+        </table>
+      </div>
+      
+      <div style="margin-top: 20px;">
+        <button onclick="window.print()" class="btn-secondary">🖨️ Print Nomination List</button>
+      </div>
+    </section>
+
+    <!-- FOLLOW-UP REPORT -->
+    <section id="followupReportSection" class="hidden">
+      <h2>📞 Rally Follow-up Report</h2>
+      <p class="helpText">See who has responded (✅ Attending or ❌ Not Attending) and who you still need to contact.</p>
+      
+      <div class="formRow">
+        <label>Select Rally:</label>
+        <select id="followupRally" onchange="loadFollowupReport()">
+          <option value="">-- Select Rally --</option>
+        </select>
+      </div>
+      
+      <div id="followupHeader"></div>
+      
+      <div id="followupSummary" style="display: flex; gap: 20px; margin: 20px 0;">
+        <div style="flex: 1; background: #d4edda; padding: 15px; border-radius: 6px; text-align: center;">
+          <h3 style="margin: 0 0 10px 0; color: #155724;">✅ Attending</h3>
+          <div id="attendingCount" style="font-size: 24pt; font-weight: bold; color: #155724;">0</div>
+        </div>
+        <div style="flex: 1; background: #f8d7da; padding: 15px; border-radius: 6px; text-align: center;">
+          <h3 style="margin: 0 0 10px 0; color: #721c24;">❌ Not Attending</h3>
+          <div id="notAttendingCount" style="font-size: 24pt; font-weight: bold; color: #721c24;">0</div>
+        </div>
+        <div style="flex: 1; background: #fff3cd; padding: 15px; border-radius: 6px; text-align: center;">
+          <h3 style="margin: 0 0 10px 0; color: #856404;">⏳ No Response</h3>
+          <div id="noResponseCount" style="font-size: 24pt; font-weight: bold; color: #856404;">0</div>
+        </div>
+      </div>
+      
+      <div class="tableWrapper">
+        <table id="followupTable">
+          <tr>
+            <th style="width: 40%;">Member Name</th>
+            <th style="width: 15%;">Mobile</th>
+            <th style="width: 25%;">Email</th>
+            <th style="width: 20%;">Status</th>
+          </tr>
+        </table>
+      </div>
+      
+      <div style="margin-top: 20px;">
+        <button onclick="window.print()" class="btn-secondary">🖨️ Print Follow-up List</button>
+      </div>
+    </section>
+
+    <!-- CLUB SETTINGS -->
+    <section id="clubSettingsSection" class="hidden">
+      <h2>⚙️ Club Settings</h2>
+      <p class="helpText">Configure your club name and logo. This appears on all printed reports.</p>
+
+      <div class="formBox">
+        <h3>Club Information</h3>
+        
+        <div class="formRow">
+          <label>Club Name:</label>
+          <input type="text" id="clubName" placeholder="Carefree Caravaneers Club of SA Inc" style="flex: 2;">
+        </div>
+
+        <div class="formRow">
+          <label>Club Logo:</label>
+          <input type="file" id="clubLogoInput" accept="image/*" onchange="uploadLogo()">
+        </div>
+
+        <div id="logoPreview" style="margin-top: 15px; display: none;">
+          <label>Current Logo:</label>
+          <div><img id="logoImage" style="max-width: 300px; max-height: 150px; border: 2px solid #ddd; border-radius: 6px; padding: 10px; background: white;"></div>
+          <button onclick="removeLogo()" class="btn-delete" style="margin-top: 10px;">Remove Logo</button>
+        </div>
+
+        <button onclick="saveClubSettings()" class="btn-primary" style="margin-top: 20px;">💾 Save Club Settings</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p style="text-align: center; padding: 20px; color: #666; font-size: 0.9em;">
+      💡 <strong>Tips:</strong> Data saves automatically. Download regular backups! Press Ctrl+S to save manually.
+    </p>
+  </footer>
+
+  <script>
+    // DATA
+    let members = [];
+    let deletedMembers = [];
+    let rallies = [];
+    let attendees = {};
+    let notAttending = {}; // Track who said NO to each rally
+    let clubSettings = {
+      name: "Carefree Caravaneers Club of SA Inc",
+      logo: null
+    };
+    let defaultCoordinator = {
+      name: "",
+      mobile: "",
+      email: ""
+    };
+    let lastBackupDate = null;
+
+    // STORAGE
+    function saveData() {
+      try {
+        const data = { members, deletedMembers, rallies, attendees, notAttending, clubSettings, defaultCoordinator, lastBackupDate, lastSaved: new Date().toISOString() };
+        localStorage.setItem("caravanClubData", JSON.stringify(data));
+        
+        const backups = JSON.parse(localStorage.getItem("caravanClubBackups") || "[]");
+        backups.unshift({ timestamp: new Date().toISOString(), data: data });
+        if (backups.length > 5) backups.length = 5;
+        localStorage.setItem("caravanClubBackups", JSON.stringify(backups));
+        
+        showMessage("✅ Data saved successfully", "success");
+        return true;
+      } catch (e) {
+        showMessage("❌ Failed to save data!", "error");
+        return false;
+      }
+    }
+
+    function loadData() {
+      try {
+        const raw = localStorage.getItem("caravanClubData");
+        if (!raw) return;
+        const data = JSON.parse(raw);
+        members = data.members || [];
+        deletedMembers = data.deletedMembers || [];
+        rallies = data.rallies || [];
+        attendees = data.attendees || {};
+        notAttending = data.notAttending || {};
+        clubSettings = data.clubSettings || { name: "Carefree Caravaneers Club of SA Inc", logo: null };
+        defaultCoordinator = data.defaultCoordinator || { name: "", mobile: "", email: "" };
+        lastBackupDate = data.lastBackupDate || null;
+      } catch (e) {
+        console.error("Failed to load data", e);
+      }
+    }
+
+    function exportBackup() {
+      const data = { members, deletedMembers, rallies, attendees, notAttending, clubSettings, defaultCoordinator, lastBackupDate: new Date().toISOString() };
+      const json = JSON.stringify(data, null, 2);
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      
+      // Format date as dd-mm-yyyy (Australian format)
+      const now = new Date();
+      const day = String(now.getDate()).padStart(2, '0');
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const year = now.getFullYear();
+      const dateStr = `${day}-${month}-${year}`;
+      
+      a.download = `caravan-backup-${dateStr}.json`;
+      a.click();
+      
+      // Update last backup date
+      lastBackupDate = new Date().toISOString();
+      saveData();
+      
+      showMessage("✅ Backup downloaded! Save to OneDrive for safety.", "success");
+    }
+
+    function handleRestoreFile(input) {
+      const file = input.files[0];
+      if (!file) {
+        showMessage("❌ No file selected", "error");
+        return;
+      }
+      
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          const data = JSON.parse(event.target.result);
+          if (confirm("Replace ALL current data with this backup?")) {
+            members = data.members || [];
+            deletedMembers = data.deletedMembers || [];
+            rallies = data.rallies || [];
+            attendees = data.attendees || {};
+            notAttending = data.notAttending || {};
+            clubSettings = data.clubSettings || { name: "Carefree Caravaneers Club of SA Inc", logo: null };
+            defaultCoordinator = data.defaultCoordinator || { name: "", mobile: "", email: "" };
+            lastBackupDate = data.lastBackupDate || null;
+            
+            saveData();
+            initApp();
+            showMessage("✅ Backup restored successfully!", "success");
+          }
+        } catch (err) {
+          showMessage("❌ Invalid backup file! " + err.message, "error");
+        }
+      };
+      reader.onerror = () => {
+        showMessage("❌ Failed to read file!", "error");
+      };
+      reader.readAsText(file);
+      
+      // Reset input so same file can be selected again
+      input.value = '';
+    }
+
+    function importBackup() {
+      // Trigger the hidden file input
+      document.getElementById('restoreFileInput').click();
+    }
+
+    // CSV IMPORT/EXPORT
+    function importCSV() {
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = '.csv';
+      input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          try {
+            const csv = event.target.result;
+            const lines = csv.split('\n');
+            
+            // Skip header row
+            let imported = 0;
+            let skipped = 0;
+            
+            // Start with a unique timestamp base
+            const baseId = Date.now();
+            
+            for (let i = 1; i < lines.length; i++) {
+              const line = lines[i].trim();
+              if (!line) continue;
+              
+              // Parse CSV line (handles commas in quotes)
+              const parts = parseCSVLine(line);
+              if (parts.length < 1) continue;
+              
+              const name = parts[0]?.trim();
+              if (!name) {
+                skipped++;
+                continue;
+              }
+              
+              // Check for duplicate
+              if (members.some(m => m.name.toLowerCase() === name.toLowerCase())) {
+                skipped++;
+                continue;
+              }
+              
+              // Fix phone numbers - add leading 0 if missing and looks like mobile
+              let mobile = parts[3]?.trim() || "";
+              if (mobile && !mobile.startsWith('0') && mobile.length >= 9) {
+                mobile = '0' + mobile;
+              }
+              
+              // Create truly unique ID - base timestamp + index in milliseconds
+              const uniqueId = baseId + (imported * 1000);
+              
+              const member = {
+                id: uniqueId,
+                name: name,
+                adult: parts[1]?.trim() || "",
+                van: parts[2]?.trim() || "",
+                mobile: mobile,
+                email: parts[4]?.trim() || "",
+                vanLength: parts[5]?.trim() || "",
+                postcode: parts[6]?.trim() || "",
+                notes: parts[7]?.trim() || ""
+              };
+              
+              console.log(`Importing member: ${name} with ID: ${uniqueId}`);
+              
+              members.push(member);
+              imported++;
+            }
+            
+            if (imported > 0) {
+              sortMembers();
+              populateMemberTable();
+              loadMemberDropdown();
+              saveData();
+              showMessage(`✅ Imported ${imported} members! ${skipped > 0 ? '(' + skipped + ' skipped)' : ''}`, "success");
+            } else {
+              showMessage("❌ No valid members found in CSV", "error");
+            }
+          } catch (err) {
+            showMessage("❌ Error reading CSV file!", "error");
+            console.error(err);
+          }
+        };
+        reader.readAsText(file);
+      };
+      input.click();
+    }
+
+    function parseCSVLine(line) {
+      const result = [];
+      let current = '';
+      let inQuotes = false;
+      
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        
+        if (char === '"') {
+          inQuotes = !inQuotes;
+        } else if (char === ',' && !inQuotes) {
+          result.push(current);
+          current = '';
+        } else {
+          current += char;
+        }
+      }
+      result.push(current);
+      
+      return result.map(s => s.replace(/^"|"$/g, '').trim());
+    }
+
+    function exportMembersCSV() {
+      if (members.length === 0) {
+        showMessage("❌ No members to export!", "error");
+        return;
+      }
+      
+      // Create CSV content with Notes column
+      let csv = "Name,Adult,Van,Mobile,Email,Van Length,Postcode,Notes\n";
+      
+      members.forEach(m => {
+        const row = [
+          `"${m.name}"`,
+          `"${m.adult || ""}"`,
+          `"${m.van || ""}"`,
+          `"='${m.mobile}'"`,  // Excel formula trick to preserve leading zero
+          `"${m.email || ""}"`,
+          `"${m.vanLength || ""}"`,
+          `"${m.postcode || ""}"`,
+          `"${m.notes || ""}"`
+        ].join(',');
+        csv += row + '\n';
+      });
+      
+      // Download
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `members-${new Date().toISOString().split('T')[0]}.csv`;
+      a.click();
+      showMessage("✅ Members exported to CSV!", "success");
+    }
+
+    function fixAllPhoneNumbers() {
+      let fixed = 0;
+      members.forEach(m => {
+        if (m.mobile && !m.mobile.startsWith('0') && m.mobile.length >= 9) {
+          m.mobile = '0' + m.mobile;
+          fixed++;
+        }
+      });
+      
+      if (fixed > 0) {
+        populateMemberTable();
+        saveData();
+        showMessage(`✅ Fixed ${fixed} phone numbers!`, "success");
+      } else {
+        showMessage("✅ All phone numbers are correct!", "success");
+      }
+    }
+
+    function fixMemberIDs() {
+      if (!confirm("This will fix all broken member IDs. This is safe but will create new IDs for all members. Continue?")) {
+        return;
+      }
+      
+      let fixed = 0;
+      const baseId = Date.now();
+      
+      members.forEach((m, index) => {
+        const oldId = m.id;
+        const newId = baseId + (index * 1000);
+        
+        // Check if ID is invalid (NaN, undefined, or not a number)
+        if (!m.id || isNaN(m.id) || typeof m.id !== 'number') {
+          console.log(`Fixing member ${m.name}: ${oldId} → ${newId}`);
+          m.id = newId;
+          fixed++;
+        } else {
+          // Even valid IDs might need fixing if they're causing issues
+          m.id = newId;
+          fixed++;
+        }
+      });
+      
+      // Also fix any attendee references with old IDs
+      Object.keys(attendees).forEach(rallyId => {
+        attendees[rallyId].forEach(a => {
+          if (!a.memberId || isNaN(a.memberId)) {
+            console.log(`Warning: Found invalid attendee memberId in rally ${rallyId}`);
+          }
+        });
+      });
+      
+      populateMemberTable();
+      loadMemberDropdown();
+      saveData();
+      showMessage(`✅ Fixed ${fixed} member IDs! Please re-mark rally attendance.`, "success");
+    }
+
+    // USER FEEDBACK
+    function showMessage(msg, type = "info") {
+      const existing = document.getElementById("globalMessage");
+      if (existing) existing.remove();
+      
+      const div = document.createElement("div");
+      div.id = "globalMessage";
+      div.className = `message-${type}`;
+      div.textContent = msg;
+      document.body.appendChild(div);
+      
+      setTimeout(() => {
+        div.style.opacity = "0";
+        setTimeout(() => div.remove(), 300);
+      }, 3000);
+    }
+
+    // INIT
+    // BACKUP REMINDER
+    function checkBackupReminder() {
+      if (!lastBackupDate) {
+        // Never backed up
+        if (members.length > 0 || rallies.length > 0) {
+          setTimeout(() => {
+            if (confirm("⚠️ BACKUP REMINDER\n\nYou haven't created a backup yet!\n\nClick OK to backup now, or Cancel to remind you in 7 days.")) {
+              exportBackup();
+            } else {
+              // Snooze for 7 days
+              lastBackupDate = new Date(Date.now() - (23 * 24 * 60 * 60 * 1000)).toISOString(); // 23 days ago (will remind in 7)
+              saveData();
+            }
+          }, 3000); // Show after 3 seconds
+        }
+        return;
+      }
+      
+      const daysSinceBackup = (Date.now() - new Date(lastBackupDate)) / (1000 * 60 * 60 * 24);
+      
+      if (daysSinceBackup >= 30) {
+        // 30+ days - URGENT
+        setTimeout(() => {
+          if (confirm("🚨 URGENT BACKUP REMINDER!\n\nLast backup was " + Math.floor(daysSinceBackup) + " days ago!\n\nClick OK to backup NOW, or Cancel to snooze for 7 days.")) {
+            exportBackup();
+          } else {
+            lastBackupDate = new Date(Date.now() - (23 * 24 * 60 * 60 * 1000)).toISOString();
+            saveData();
+          }
+        }, 2000);
+      } else if (daysSinceBackup >= 14) {
+        // 14-29 days - WARNING
+        setTimeout(() => {
+          if (confirm("⚠️ BACKUP REMINDER\n\nLast backup was " + Math.floor(daysSinceBackup) + " days ago.\n\nClick OK to backup now, or Cancel to snooze for 7 days.")) {
+            exportBackup();
+          } else {
+            lastBackupDate = new Date(Date.now() - (7 * 24 * 60 * 60 * 1000)).toISOString();
+            saveData();
+          }
+        }, 3000);
+      } else if (daysSinceBackup >= 7) {
+        // 7-13 days - INFO
+        setTimeout(() => {
+          const doBackup = confirm("💾 BACKUP REMINDER\n\nLast backup was " + Math.floor(daysSinceBackup) + " days ago.\n\nGood practice to backup weekly!\n\nClick OK to backup now.");
+          if (doBackup) {
+            exportBackup();
+          }
+        }, 5000);
+      }
+    }
+
+    function initApp() {
+      loadData();
+      sortMembers();
+      populateMemberTable();
+      populateRallyTable();
+      loadRallyDropdowns();
+      loadSummaryYearDropdown();
+      loadMemberDropdown();
+      loadDashboard();
+      showSection("dashboardSection");
+      
+      // Check if backup is needed
+      checkBackupReminder();
+      
+      document.addEventListener('keydown', (e) => {
+        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+          e.preventDefault();
+          saveData();
+        }
+        if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
+          e.preventDefault();
+          exportBackup();
+        }
+      });
+    }
+
+    // NAVIGATION
+    function showSection(id) {
+      document.querySelectorAll("main section").forEach(sec => sec.classList.add("hidden"));
+      const el = document.getElementById(id);
+      if (el) {
+        el.classList.remove("hidden");
+        if (id === "dashboardSection") loadDashboard();
+        if (id === "memberSection") populateMemberTable();
+        if (id === "createRallySection") populateRallyTable();
+      }
+    }
+
+    // MEMBERS
+    function addMember() {
+      const name = document.getElementById("memName").value.trim();
+      if (!name) {
+        showMessage("❌ Please enter a name", "error");
+        return;
+      }
+
+      const member = {
+        id: Date.now(),
+        name,
+        adult: document.getElementById("memAdult").value.trim(),
+        van: document.getElementById("memVan").value.trim(),
+        mobile: document.getElementById("memMobile").value.trim(),
+        email: document.getElementById("memEmail").value.trim(),
+        vanLength: document.getElementById("memVanLength").value.trim(),
+        postcode: document.getElementById("memPostcode").value.trim(),
+        notes: document.getElementById("memNotes").value.trim()
+      };
+
+      members.push(member);
+      sortMembers();
+      populateMemberTable();
+      loadMemberDropdown();
+      saveData();
+
+      document.getElementById("memName").value = "";
+      document.getElementById("memAdult").value = "";
+      document.getElementById("memVan").value = "";
+      document.getElementById("memMobile").value = "";
+      document.getElementById("memEmail").value = "";
+      document.getElementById("memVanLength").value = "";
+      document.getElementById("memPostcode").value = "";
+      document.getElementById("memNotes").value = "";
+      
+      showMessage(`✅ ${name} added!`, "success");
+    }
+
+    function sortMembers() {
+      members.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    function populateMemberTable() {
+      const table = document.getElementById("memberTable");
+      table.innerHTML = `<tr><th>Name</th><th>Adult</th><th>Van</th><th>Mobile</th><th>Email</th><th>Van Length</th><th>Postcode</th><th>Notes</th><th>Actions</th></tr>`;
+      
+      if (members.length === 0) {
+        const row = table.insertRow();
+        const cell = row.insertCell();
+        cell.colSpan = 9;
+        cell.style.textAlign = "center";
+        cell.style.padding = "20px";
+        cell.textContent = "No members yet. Add your first member above!";
+        return;
+      }
+      
+      members.forEach(m => {
+        const row = document.createElement("tr");
+        
+        // Add all data cells
+        row.insertCell().textContent = m.name;
+        row.insertCell().textContent = m.adult || "";
+        row.insertCell().textContent = m.van || "";
+        row.insertCell().textContent = m.mobile || "";
+        row.insertCell().textContent = m.email || "";
+        row.insertCell().textContent = m.vanLength || "";
+        row.insertCell().textContent = m.postcode || "";
+        row.insertCell().textContent = m.notes || "";
+        
+        // Actions cell
+        const actionsCell = row.insertCell();
+        
+        // Edit button
+        const editBtn = document.createElement('button');
+        editBtn.className = 'btn-edit';
+        editBtn.textContent = 'Edit';
+        editBtn.setAttribute('data-member-id', m.id);
+        editBtn.addEventListener('click', function() {
+          editMember(parseInt(this.getAttribute('data-member-id')));
+        });
+        actionsCell.appendChild(editBtn);
+        
+        // Delete button
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'btn-delete';
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.setAttribute('data-member-id', m.id);
+        deleteBtn.addEventListener('click', function() {
+          deleteMember(parseInt(this.getAttribute('data-member-id')));
+        });
+        actionsCell.appendChild(deleteBtn);
+        
+        table.appendChild(row);
+      });
+      
+      populateDeletedMemberTable();
+    }
+
+    function editMember(id) {
+      const m = members.find(x => x.id === id);
+      if (!m) return;
+      document.getElementById("editMemId").value = m.id;
+      document.getElementById("editMemName").value = m.name;
+      document.getElementById("editMemAdult").value = m.adult || "";
+      document.getElementById("editMemVan").value = m.van || "";
+      document.getElementById("editMemMobile").value = m.mobile || "";
+      document.getElementById("editMemEmail").value = m.email || "";
+      document.getElementById("editMemVanLength").value = m.vanLength || "";
+      document.getElementById("editMemPostcode").value = m.postcode || "";
+      document.getElementById("editMemNotes").value = m.notes || "";
+      document.getElementById("editMemberModal").classList.remove("hidden");
+    }
+
+    function saveMemberEdits() {
+      const id = parseInt(document.getElementById("editMemId").value);
+      const m = members.find(x => x.id === id);
+      if (!m) return;
+
+      m.name = document.getElementById("editMemName").value.trim();
+      m.adult = document.getElementById("editMemAdult").value.trim();
+      m.van = document.getElementById("editMemVan").value.trim();
+      m.mobile = document.getElementById("editMemMobile").value.trim();
+      m.email = document.getElementById("editMemEmail").value.trim();
+      m.vanLength = document.getElementById("editMemVanLength").value.trim();
+      m.postcode = document.getElementById("editMemPostcode").value.trim();
+      m.notes = document.getElementById("editMemNotes").value.trim();
+
+      sortMembers();
+      populateMemberTable();
+      loadMemberDropdown();
+      saveData();
+      closeEditModal();
+      showMessage(`✅ ${m.name} updated!`, "success");
+    }
+
+    function closeEditModal() {
+      document.getElementById("editMemberModal").classList.add("hidden");
+    }
+
+    function deleteMember(id) {
+      console.log("Delete member called with ID:", id, "Type:", typeof id);
+      const m = members.find(x => x.id === id);
+      console.log("Found member:", m);
+      
+      if (!m) {
+        console.error("Member not found with ID:", id);
+        console.log("Available member IDs:", members.map(m => m.id));
+        showMessage("❌ Error: Member not found!", "error");
+        return;
+      }
+      
+      if (!confirm(`Delete ${m.name}?`)) {
+        console.log("User cancelled delete");
+        return;
+      }
+
+      console.log("Deleting member:", m.name);
+      deletedMembers.push({ ...m, dateDeleted: new Date().toLocaleDateString() });
+      members = members.filter(x => x.id !== id);
+      populateMemberTable();
+      loadMemberDropdown();
+      saveData();
+      showMessage(`✅ ${m.name} deleted`, "success");
+    }
+
+    function restoreMember(id) {
+      const m = deletedMembers.find(x => x.id === id);
+      if (!m) return;
+      
+      members.push({ 
+        id: m.id, 
+        name: m.name, 
+        adult: m.adult, 
+        van: m.van, 
+        mobile: m.mobile, 
+        email: m.email, 
+        vanLength: m.vanLength, 
+        postcode: m.postcode,
+        notes: m.notes || ""
+      });
+      sortMembers();
+      deletedMembers = deletedMembers.filter(x => x.id !== id);
+      populateMemberTable();
+      loadMemberDropdown();
+      saveData();
+      showMessage(`✅ ${m.name} restored!`, "success");
+    }
+
+    function populateDeletedMemberTable() {
+      const table = document.getElementById("deletedMemberTable");
+      table.innerHTML = `<tr><th>Name</th><th>Mobile</th><th>Email</th><th>Date Deleted</th><th>Actions</th></tr>`;
+      
+      if (deletedMembers.length === 0) {
+        const row = table.insertRow();
+        const cell = row.insertCell();
+        cell.colSpan = 5;
+        cell.style.textAlign = "center";
+        cell.style.padding = "10px";
+        cell.textContent = "No deleted members";
+        return;
+      }
+      
+      deletedMembers.forEach(m => {
+        const row = document.createElement("tr");
+        row.insertCell().textContent = m.name;
+        row.insertCell().textContent = m.mobile;
+        row.insertCell().textContent = m.email;
+        row.insertCell().textContent = m.dateDeleted;
+        
+        const actionsCell = row.insertCell();
+        const restoreBtn = document.createElement('button');
+        restoreBtn.className = 'btn-restore';
+        restoreBtn.textContent = 'Restore';
+        restoreBtn.setAttribute('data-member-id', m.id);
+        restoreBtn.addEventListener('click', function() {
+          restoreMember(parseInt(this.getAttribute('data-member-id')));
+        });
+        actionsCell.appendChild(restoreBtn);
+        
+        table.appendChild(row);
+      });
+    }
+
+    function loadMemberDropdown() {
+      const dropdown = document.getElementById("attendeeMember");
+      if (!dropdown) return;
+      dropdown.innerHTML = `<option value="">-- Select Member --</option>`;
+      members.forEach(m => {
+        const opt = document.createElement("option");
+        opt.value = m.id;
+        opt.textContent = m.name;
+        dropdown.appendChild(opt);
+      });
+    }
+
+    // RALLIES
+    function createRally() {
+      const name = document.getElementById("rallyName").value.trim();
+      const start = document.getElementById("rallyStart").value;
+      const finish = document.getElementById("rallyFinish").value;
+
+      if (!name || !start || !finish) {
+        showMessage("❌ Please enter name and dates", "error");
+        return;
+      }
+
+      const rally = {
+        id: Date.now(),
+        name,
+        start,
+        finish,
+        coordinatorName: document.getElementById("coordName").value.trim(),
+        coordinatorMobile: document.getElementById("coordMobile").value.trim(),
+        coordinatorEmail: document.getElementById("coordEmail").value.trim()
+      };
+
+      rallies.push(rally);
+      rallies.sort((a, b) => new Date(a.start) - new Date(b.start));
+      
+      populateRallyTable();
+      loadRallyDropdowns();
+      loadSummaryYearDropdown();
+      saveData();
+
+      document.getElementById("rallyName").value = "";
+      document.getElementById("rallyStart").value = "";
+      document.getElementById("rallyFinish").value = "";
+      document.getElementById("coordName").value = "";
+      document.getElementById("coordMobile").value = "";
+      document.getElementById("coordEmail").value = "";
+      
+      showMessage(`✅ ${name} created!`, "success");
+    }
+
+    function populateRallyTable() {
+      const table = document.getElementById("rallyTable");
+      table.innerHTML = `<tr><th>Name</th><th>Start</th><th>Finish</th><th>Coordinator</th><th>Attendees</th><th>Actions</th></tr>`;
+      
+      if (rallies.length === 0) {
+        const row = table.insertRow();
+        const cell = row.insertCell();
+        cell.colSpan = 6;
+        cell.style.textAlign = "center";
+        cell.style.padding = "20px";
+        cell.textContent = "No rallies yet. Create your first rally above!";
+        return;
+      }
+      
+      rallies.forEach(r => {
+        const attendeeCount = attendees[r.id] ? attendees[r.id].length : 0;
+        const row = document.createElement("tr");
+        
+        row.insertCell().textContent = r.name;
+        row.insertCell().textContent = formatDate(r.start);
+        row.insertCell().textContent = formatDate(r.finish);
+        row.insertCell().textContent = r.coordinatorName;
+        row.insertCell().textContent = attendeeCount;
+        
+        const actionsCell = row.insertCell();
+        
+        // Edit button
+        const editBtn = document.createElement('button');
+        editBtn.className = 'btn-edit';
+        editBtn.textContent = 'Edit';
+        editBtn.setAttribute('data-rally-id', r.id);
+        editBtn.addEventListener('click', function() {
+          editRally(parseInt(this.getAttribute('data-rally-id')));
+        });
+        actionsCell.appendChild(editBtn);
+        
+        // Delete button
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'btn-delete';
+        deleteBtn.textContent = 'Delete';
+        deleteBtn.setAttribute('data-rally-id', r.id);
+        deleteBtn.addEventListener('click', function() {
+          deleteRally(parseInt(this.getAttribute('data-rally-id')));
+        });
+        actionsCell.appendChild(deleteBtn);
+        
+        table.appendChild(row);
+      });
+    }
+
+    function deleteRally(rallyId) {
+      const rally = rallies.find(r => r.id === rallyId);
+      if (!rally) return;
+      
+      const attendeeCount = attendees[rallyId] ? attendees[rallyId].length : 0;
+      let confirmMsg = `Delete rally "${rally.name}"?`;
+      if (attendeeCount > 0) {
+        confirmMsg += `\n\nWARNING: This rally has ${attendeeCount} attendees. All attendance data for this rally will be deleted!`;
+      }
+      
+      if (!confirm(confirmMsg)) return;
+      
+      // Remove rally and its attendees
+      rallies = rallies.filter(r => r.id !== rallyId);
+      delete attendees[rallyId];
+      
+      populateRallyTable();
+      loadRallyDropdowns();
+      loadSummaryYearDropdown();
+      saveData();
+      showMessage(`✅ Rally "${rally.name}" deleted!`, "success");
+    }
+
+    function editRally(id) {
+      const r = rallies.find(x => x.id === id);
+      if (!r) return;
+      document.getElementById("editRallyId").value = r.id;
+      document.getElementById("editRallyName").value = r.name;
+      document.getElementById("editRallyStart").value = r.start;
+      document.getElementById("editRallyFinish").value = r.finish;
+      document.getElementById("editCoordName").value = r.coordinatorName || "";
+      document.getElementById("editCoordMobile").value = r.coordinatorMobile || "";
+      document.getElementById("editCoordEmail").value = r.coordinatorEmail || "";
+      document.getElementById("editRallyModal").classList.remove("hidden");
+    }
+
+    function saveRallyEdits() {
+      const id = parseInt(document.getElementById("editRallyId").value);
+      const r = rallies.find(x => x.id === id);
+      if (!r) return;
+
+      r.name = document.getElementById("editRallyName").value.trim();
+      r.start = document.getElementById("editRallyStart").value;
+      r.finish = document.getElementById("editRallyFinish").value;
+      r.coordinatorName = document.getElementById("editCoordName").value.trim();
+      r.coordinatorMobile = document.getElementById("editCoordMobile").value.trim();
+      r.coordinatorEmail = document.getElementById("editCoordEmail").value.trim();
+
+      populateRallyTable();
+      loadRallyDropdowns();
+      loadSummaryYearDropdown();
+      loadDashboard();
+      saveData();
+      closeRallyEditModal();
+      showMessage(`✅ Rally "${r.name}" updated!`, "success");
+    }
+
+    function closeRallyEditModal() {
+      document.getElementById("editRallyModal").classList.add("hidden");
+    }
+
+    function saveAsDefaultCoordinator() {
+      defaultCoordinator.name = document.getElementById("coordName").value.trim();
+      defaultCoordinator.mobile = document.getElementById("coordMobile").value.trim();
+      defaultCoordinator.email = document.getElementById("coordEmail").value.trim();
+      
+      if (!defaultCoordinator.name) {
+        showMessage("❌ Please enter coordinator name first!", "error");
+        return;
+      }
+      
+      saveData();
+      showMessage("✅ Default coordinator saved! Click 'Use Default Coordinator' button for future rallies.", "success");
+    }
+
+    function useDefaultCoordinator() {
+      if (!defaultCoordinator.name) {
+        showMessage("❌ No default coordinator set. Enter details and click 'Save as Default Coordinator' first!", "error");
+        return;
+      }
+      
+      document.getElementById("coordName").value = defaultCoordinator.name;
+      document.getElementById("coordMobile").value = defaultCoordinator.mobile;
+      document.getElementById("coordEmail").value = defaultCoordinator.email;
+      showMessage("✅ Default coordinator filled in!", "success");
+    }
+
+    function loadRallyDropdowns() {
+      ["attendeeRally", "attendanceReportRally", "parkReportRally", "nominationRally", "followupRally"].forEach(id => {
+        const dropdown = document.getElementById(id);
+        if (!dropdown) return;
+        dropdown.innerHTML = `<option value="">-- Select Rally --</option>`;
+        rallies.forEach(r => {
+          const opt = document.createElement("option");
+          opt.value = r.id;
+          opt.textContent = `${r.name} (${formatDate(r.start)})`;
+          dropdown.appendChild(opt);
+        });
+      });
+    }
+
+    // ATTENDEES - NEW CHECKBOX SYSTEM
+    function loadAttendeeCheckboxList() {
+      const rallyId = parseInt(document.getElementById("attendeeRally").value);
+      const listDiv = document.getElementById("attendeeCheckboxList");
+      const table = document.getElementById("attendeeCheckboxTable");
+      
+      if (!rallyId) {
+        listDiv.style.display = "none";
+        return;
+      }
+      
+      listDiv.style.display = "block";
+      
+      // Reset view filter to "Show All Members" when changing rallies
+      const allMembersRadio = document.querySelector('input[name="viewFilter"][value="all"]');
+      if (allMembersRadio) {
+        allMembersRadio.checked = true;
+      }
+      
+      // Hide print button when changing rallies
+      const printBtn = document.getElementById("printChecklistBtn");
+      if (printBtn) {
+        printBtn.style.display = 'none';
+      }
+      
+      // Initialize attendees array if needed
+      if (!attendees[rallyId]) attendees[rallyId] = [];
+      if (!notAttending[rallyId]) notAttending[rallyId] = [];
+      
+      // Build table with YES and NO columns
+      table.innerHTML = `<tr>
+        <th style="width: 35px;">YES</th>
+        <th style="width: 35px;">NO</th>
+        <th>Member Name</th>
+        <th style="width: 120px;">Park Fee</th>
+        <th style="width: 120px;">Other Fee</th>
+        <th style="width: 100px;">Total</th>
+      </tr>`;
+      
+      if (members.length === 0) {
+        const row = table.insertRow();
+        const cell = row.insertCell();
+        cell.colSpan = 6;
+        cell.style.textAlign = "center";
+        cell.style.padding = "20px";
+        cell.textContent = "No members yet. Add members first!";
+        return;
+      }
+      
+      members.forEach(m => {
+        const attendee = attendees[rallyId].find(a => a.memberId === m.id);
+        const isAttending = !!attendee;
+        const isNotAttending = notAttending[rallyId].includes(m.id);
+        const parkFee = attendee ? attendee.parkFee : 0;
+        const otherFee = attendee ? attendee.otherFee : 0;
+        const total = parkFee + otherFee;
+        
+        const row = document.createElement("tr");
+        
+        // YES checkbox cell
+        const yesCheckCell = row.insertCell();
+        yesCheckCell.style.textAlign = "center";
+        const yesCheckbox = document.createElement("input");
+        yesCheckbox.type = "checkbox";
+        yesCheckbox.id = `attend_yes_${m.id}`;
+        yesCheckbox.checked = isAttending;
+        yesCheckbox.setAttribute('data-member-id', m.id);
+        yesCheckbox.setAttribute('data-rally-id', rallyId);
+        yesCheckbox.addEventListener('change', function() {
+          toggleAttendee(parseInt(this.getAttribute('data-member-id')), parseInt(this.getAttribute('data-rally-id')), 'yes');
+        });
+        yesCheckCell.appendChild(yesCheckbox);
+        
+        // NO checkbox cell
+        const noCheckCell = row.insertCell();
+        noCheckCell.style.textAlign = "center";
+        const noCheckbox = document.createElement("input");
+        noCheckbox.type = "checkbox";
+        noCheckbox.id = `attend_no_${m.id}`;
+        noCheckbox.checked = isNotAttending;
+        noCheckbox.setAttribute('data-member-id', m.id);
+        noCheckbox.setAttribute('data-rally-id', rallyId);
+        noCheckbox.addEventListener('change', function() {
+          toggleAttendee(parseInt(this.getAttribute('data-member-id')), parseInt(this.getAttribute('data-rally-id')), 'no');
+        });
+        noCheckCell.appendChild(noCheckbox);
+        
+        // Name cell
+        const nameCell = row.insertCell();
+        nameCell.textContent = m.name;
+        nameCell.style.cursor = 'pointer';
+        
+        // Park fee cell
+        const parkCell = row.insertCell();
+        const parkInput = document.createElement('input');
+        parkInput.type = 'number';
+        parkInput.id = `park_${m.id}`;
+        parkInput.value = parkFee;
+        parkInput.min = 0;
+        parkInput.step = 0.01;
+        parkInput.style.width = '100%';
+        parkInput.style.padding = '5px';
+        parkInput.disabled = !isAttending;
+        parkInput.setAttribute('data-member-id', m.id);
+        parkInput.setAttribute('data-rally-id', rallyId);
+        parkInput.addEventListener('change', function() {
+          updateAttendeeFees(parseInt(this.getAttribute('data-member-id')), parseInt(this.getAttribute('data-rally-id')));
+        });
+        parkCell.appendChild(parkInput);
+        
+        // Other fee cell
+        const otherCell = row.insertCell();
+        const otherInput = document.createElement('input');
+        otherInput.type = 'number';
+        otherInput.id = `other_${m.id}`;
+        otherInput.value = otherFee;
+        otherInput.min = 0;
+        otherInput.step = 0.01;
+        otherInput.style.width = '100%';
+        otherInput.style.padding = '5px';
+        otherInput.disabled = !isAttending;
+        otherInput.setAttribute('data-member-id', m.id);
+        otherInput.setAttribute('data-rally-id', rallyId);
+        otherInput.addEventListener('change', function() {
+          updateAttendeeFees(parseInt(this.getAttribute('data-member-id')), parseInt(this.getAttribute('data-rally-id')));
+        });
+        otherCell.appendChild(otherInput);
+        
+        // Total cell
+        const totalCell = row.insertCell();
+        totalCell.style.textAlign = 'center';
+        totalCell.style.fontWeight = 'bold';
+        totalCell.textContent = `$${total.toFixed(2)}`;
+        
+        table.appendChild(row);
+      });
+      
+      updateAttendeeSummary(rallyId);
+    }
+
+    function toggleAttendee(memberId, rallyId, type) {
+      const yesCheckbox = document.getElementById(`attend_yes_${memberId}`);
+      const noCheckbox = document.getElementById(`attend_no_${memberId}`);
+      const parkInput = document.getElementById(`park_${memberId}`);
+      const otherInput = document.getElementById(`other_${memberId}`);
+      
+      // Safety check - if elements don't exist, return
+      if (!yesCheckbox || !noCheckbox || !parkInput || !otherInput) {
+        console.error("Could not find elements for member", memberId);
+        return;
+      }
+      
+      if (type === 'yes') {
+        // YES checkbox clicked
+        if (yesCheckbox.checked) {
+          // Uncheck NO if it was checked
+          noCheckbox.checked = false;
+          notAttending[rallyId] = notAttending[rallyId].filter(id => id !== memberId);
+          
+          // Add to attendees
+          const parkFee = parseFloat(parkInput.value) || 0;
+          const otherFee = parseFloat(otherInput.value) || 0;
+          
+          // Remove if already exists (prevent duplicates)
+          attendees[rallyId] = attendees[rallyId].filter(a => a.memberId !== memberId);
+          attendees[rallyId].push({ memberId, parkFee, otherFee });
+          
+          parkInput.disabled = false;
+          otherInput.disabled = false;
+        } else {
+          // Remove from attendees
+          attendees[rallyId] = attendees[rallyId].filter(a => a.memberId !== memberId);
+          parkInput.disabled = true;
+          otherInput.disabled = true;
+          parkInput.value = 0;
+          otherInput.value = 0;
+        }
+      } else {
+        // NO checkbox clicked
+        if (noCheckbox.checked) {
+          // Uncheck YES if it was checked
+          yesCheckbox.checked = false;
+          attendees[rallyId] = attendees[rallyId].filter(a => a.memberId !== memberId);
+          
+          // Add to NOT attending
+          if (!notAttending[rallyId].includes(memberId)) {
+            notAttending[rallyId].push(memberId);
+          }
+          
+          parkInput.disabled = true;
+          otherInput.disabled = true;
+          parkInput.value = 0;
+          otherInput.value = 0;
+        } else {
+          // Remove from NOT attending
+          notAttending[rallyId] = notAttending[rallyId].filter(id => id !== memberId);
+        }
+      }
+      
+      saveData();
+      updateAttendeeSummary(rallyId);
+      populateRallyTable();
+    }
+
+    function updateAttendeeFees(memberId, rallyId) {
+      const parkInput = document.getElementById(`park_${memberId}`);
+      const otherInput = document.getElementById(`other_${memberId}`);
+      
+      const attendee = attendees[rallyId].find(a => a.memberId === memberId);
+      if (attendee) {
+        attendee.parkFee = parseFloat(parkInput.value) || 0;
+        attendee.otherFee = parseFloat(otherInput.value) || 0;
+        saveData();
+        
+        // Update total display
+        const total = attendee.parkFee + attendee.otherFee;
+        const row = parkInput.closest('tr');
+        row.cells[4].textContent = `$${total.toFixed(2)}`;
+        
+        updateAttendeeSummary(rallyId);
+      }
+    }
+
+    function updateAttendeeSummary(rallyId) {
+      const count = attendees[rallyId] ? attendees[rallyId].length : 0;
+      const summaryEl = document.getElementById("attendeeSummary");
+      if (summaryEl) {
+        summaryEl.textContent = `${count} member${count !== 1 ? 's' : ''} attending`;
+      }
+      
+      // Also update the rally table to show correct count
+      populateRallyTable();
+    }
+
+    function showMembersList() {
+      const popup = document.getElementById("membersListPopup");
+      const ul = document.getElementById("membersListUL");
+      
+      if (popup.style.display === "none" || !popup.style.display) {
+        ul.innerHTML = "";
+        if (members.length === 0) {
+          ul.innerHTML = "<li>No members yet. Add members first!</li>";
+        } else {
+          members.forEach(m => {
+            const li = document.createElement("li");
+            li.textContent = m.name;
+            li.style.padding = "5px 0";
+            ul.appendChild(li);
+          });
+        }
+        popup.style.display = "block";
+      } else {
+        popup.style.display = "none";
+      }
+    }
+
+    function filterAttendeeView() {
+      const rallyId = parseInt(document.getElementById("attendeeRally").value);
+      if (!rallyId) return;
+      
+      const filter = document.querySelector('input[name="viewFilter"]:checked').value;
+      const table = document.getElementById("attendeeCheckboxTable");
+      const rows = table.querySelectorAll('tr');
+      const printBtn = document.getElementById('printChecklistBtn');
+      
+      if (filter === 'printChecklist') {
+        // Show print checklist view - hide fee columns
+        generatePrintChecklist(rallyId);
+      } else {
+        // Hide print button if it exists
+        if (printBtn) {
+          printBtn.style.display = 'none';
+        }
+        
+        // Reload normal view to restore fee columns if coming from print view
+        const currentFilter = document.querySelector('input[name="viewFilter"]:checked').value;
+        if (table.querySelector('tr').children.length <= 4) {
+          // We're in print view format, reload normal view
+          loadAttendeeCheckboxList();
+        }
+        
+        // Normal view - show/hide rows based on filter
+        // Skip header row (index 0)
+        for (let i = 1; i < rows.length; i++) {
+          const checkbox = rows[i].querySelector('input[type="checkbox"]');
+          if (checkbox) {
+            if (filter === 'attending') {
+              // Show only checked rows
+              rows[i].style.display = checkbox.checked ? '' : 'none';
+            } else {
+              // Show all rows
+              rows[i].style.display = '';
+            }
+          }
+        }
+      }
+    }
+
+    function generatePrintChecklist(rallyId) {
+      const rally = rallies.find(r => r.id === rallyId);
+      if (!rally) return;
+      
+      const table = document.getElementById("attendeeCheckboxTable");
+      const attendeeList = attendees[rallyId] || [];
+      const notAttendingList = notAttending[rallyId] || [];
+      
+      // Get attending member IDs for checkmarks
+      const attendingIds = attendeeList.map(a => a.memberId);
+      const notAttendingIds = notAttendingList; // This is already an array of IDs
+      
+      // Create print-friendly checklist
+      let html = `
+        <tr style="background: #1f4fa8; color: white;">
+          <th style="width: 60px; text-align: center;">YES</th>
+          <th style="width: 60px; text-align: center;">NO</th>
+          <th style="text-align: left;">Member Name</th>
+          <th style="width: 200px;">Notes</th>
+        </tr>
+      `;
+      
+      members.forEach(m => {
+        const isAttending = attendingIds.includes(m.id);
+        const isNotAttending = notAttendingIds.includes(m.id);
+        
+        html += `
+          <tr style="border-bottom: 1px solid #ddd;">
+            <td style="text-align: center; font-size: 20px; padding: 10px;">
+              ${isAttending ? '☑' : '☐'}
+            </td>
+            <td style="text-align: center; font-size: 20px; padding: 10px;">
+              ${isNotAttending ? '☑' : '☐'}
+            </td>
+            <td style="text-align: left; padding: 10px;">
+              ${m.name}
+            </td>
+            <td style="border-left: 1px solid #ddd; padding: 10px;"></td>
+          </tr>
+        `;
+      });
+      
+      // Add totals row
+      html += `
+        <tr style="background: #f0f0f0; font-weight: bold;">
+          <td colspan="2" style="text-align: center; padding: 10px;">Total Attending:</td>
+          <td style="padding: 10px;">${attendeeList.length} members</td>
+          <td></td>
+        </tr>
+      `;
+      
+      table.innerHTML = html;
+      
+      // Show print button
+      const checklistDiv = document.getElementById("attendeeCheckboxList");
+      let printBtn = document.getElementById("printChecklistBtn");
+      if (!printBtn) {
+        printBtn = document.createElement('button');
+        printBtn.id = 'printChecklistBtn';
+        printBtn.className = 'btn-secondary';
+        printBtn.innerHTML = '🖨️ Print Checklist';
+        printBtn.style.marginTop = '20px';
+        checklistDiv.appendChild(printBtn);
+      }
+      
+      // Update the onclick handler each time to use the current rally
+      printBtn.onclick = function() {
+        printAttendanceChecklist(rally);
+      };
+      
+      printBtn.style.display = 'block';
+    }
+
+    function printAttendanceChecklist(rally) {
+      // Create a print-friendly window
+      const printWindow = window.open('', '_blank');
+      const attendeeList = attendees[rally.id] || [];
+      const notAttendingList = notAttending[rally.id] || [];
+      const attendingIds = attendeeList.map(a => a.memberId);
+      const notAttendingIds = notAttendingList; // This is already an array of IDs
+      
+      const clubName = clubSettings.name || 'Caravan Club';
+      const rallyName = rally.name;
+      const rallyDates = formatDate(rally.start) + ' to ' + formatDate(rally.finish);
+      const logoData = clubSettings.logo || '';
+      
+      let html = '<!DOCTYPE html><html><head><title>Attendance Checklist - ' + rallyName + '</title>';
+      html += '<style>';
+      html += '@page { margin: 0.45in 0.3in 0.45in 1.38in; size: A4 portrait; }';
+      html += 'body { font-family: Arial, sans-serif; margin: 0; padding: 10px; font-size: 11px; position: relative; }';
+      html += '.logo { position: absolute; top: 5px; left: 5px; max-width: 100px; max-height: 60px; }';
+      html += '.header-content { margin-left: 110px; margin-bottom: 8px; }';
+      html += 'h1 { text-align: center; color: #1f4fa8; margin: 0 0 6px 0; font-size: 14px; font-weight: bold; }';
+      html += '.rally-info { background: #1f4fa8; color: white; padding: 7px; text-align: center; border: 2px solid #1f4fa8; border-radius: 6px; margin-bottom: 7px; }';
+      html += '.rally-name { font-size: 14px; font-weight: bold; margin: 0 0 2px 0; }';
+      html += '.rally-dates { font-size: 13px; font-weight: bold; margin: 0; }';
+      html += '.instructions { text-align: center; font-style: italic; color: #333; margin-bottom: 6px; font-size: 9px; background: #ffeb3b; padding: 4px 8px; border-radius: 4px; font-weight: bold; }';
+      html += 'table { width: 100%; border-collapse: collapse; margin: 0; clear: both; }';
+      html += 'th { background: #1f4fa8; color: white; padding: 5px 4px; text-align: center; border: 1px solid #000; font-size: 11px; }';
+      html += 'th:nth-child(3) { text-align: left; }';
+      html += 'td { padding: 3.5px 3px; border: 1px solid #000; text-align: center; font-size: 16px; line-height: 1.2; }';
+      html += 'td:nth-child(3) { text-align: left; font-size: 10.5px; }';
+      html += 'td:nth-child(4) { border-left: 1px solid #999; }';
+      html += 'tr:nth-child(even) { background: #f9f9f9; }';
+      html += '.no-response { background: #ffeb3b !important; }';
+      html += '.checkbox { font-size: 17px; }';
+      html += '</style></head><body>';
+      
+      // Add logo if available
+      if (logoData) {
+        html += '<img src="' + logoData + '" class="logo" alt="Club Logo">';
+      }
+      
+      html += '<div class="header-content">';
+      html += '<h1>' + clubName + '</h1>';
+      html += '<div class="rally-info">';
+      html += '<div class="rally-name">' + rallyName + '</div>';
+      html += '<div class="rally-dates">' + rallyDates + '</div>';
+      html += '</div>';
+      html += '<p class="instructions">Mark attendance by checking YES or NO for each member</p>';
+      html += '</div>';
+      
+      html += '<table><tr>';
+      html += '<th style="width: 45px;">YES</th>';
+      html += '<th style="width: 45px;">NO</th>';
+      html += '<th>Member Name</th>';
+      html += '<th style="width: 120px;">Notes</th>';
+      html += '</tr>';
+      
+      members.forEach(function(m) {
+        const isAttending = attendingIds.includes(m.id);
+        const isNotAttending = notAttendingIds.includes(m.id);
+        const noResponse = !isAttending && !isNotAttending;
+        
+        html += '<tr' + (noResponse ? ' class="no-response"' : '') + '>';
+        html += '<td class="checkbox">' + (isAttending ? '☑' : '☐') + '</td>';
+        html += '<td class="checkbox">' + (isNotAttending ? '☑' : '☐') + '</td>';
+        html += '<td>' + m.name + '</td>';
+        html += '<td></td>';
+        html += '</tr>';
+      });
+      
+      html += '</table>';
+      html += '<script>window.onload = function() { window.print(); }<\/script>';
+      html += '</body></html>';
+      
+      printWindow.document.write(html);
+      printWindow.document.close();
+    }
+
+    // REPORTS
+    function loadAttendanceReport() {
+      const rallyId = document.getElementById("attendanceReportRally").value;
+      const table = document.getElementById("attendanceReportTable");
+      const header = document.getElementById("attendanceReportHeader");
+      const totals = document.getElementById("attendanceTotals");
+
+      table.innerHTML = `<tr><th>Name</th><th>Park Fee</th><th>Other Fee</th><th>Total</th></tr>`;
+      header.textContent = "";
+      totals.textContent = "";
+
+      if (!rallyId) return;
+
+      const rally = rallies.find(r => r.id == rallyId);
+      if (!rally) return;
+
+      header.textContent = `${rally.name} - ${formatDate(rally.start)} to ${formatDate(rally.finish)}`;
+
+      const attendeeList = attendees[rallyId] || [];
+      if (attendeeList.length === 0) {
+        totals.innerHTML = `<p style="text-align: center; padding: 20px;">No attendees yet.</p>`;
+        return;
+      }
+
+      let totalPark = 0, totalOther = 0;
+      const parkValues = attendeeList.filter(a => a.parkFee > 0).map(a => a.parkFee);
+      const otherValues = attendeeList.filter(a => a.otherFee > 0).map(a => a.otherFee);
+      const avgPark = parkValues.length ? parkValues.reduce((a,b)=>a+b,0) / parkValues.length : 0;
+      const avgOther = otherValues.length ? otherValues.reduce((a,b)=>a+b,0) / otherValues.length : 0;
+
+      let projectedPark = 0, projectedOther = 0;
+
+      attendeeList.forEach(a => {
+        const member = members.find(m => m.id === a.memberId);
+        if (!member) return;
+
+        const parkFee = a.parkFee > 0 ? a.parkFee : avgPark;
+        const otherFee = a.otherFee > 0 ? a.otherFee : avgOther;
+
+        totalPark += a.parkFee;
+        totalOther += a.otherFee;
+        projectedPark += parkFee;
+        projectedOther += otherFee;
+
+        const total = parkFee + otherFee;
+        const row = document.createElement("tr");
+        row.innerHTML = `<td>${member.name}</td><td>$${parkFee.toFixed(2)}</td><td>$${otherFee.toFixed(2)}</td><td><strong>$${total.toFixed(2)}</strong></td>`;
+        table.appendChild(row);
+      });
+
+      const actualTotal = totalPark + totalOther;
+      const projectedTotal = projectedPark + projectedOther;
+
+      totals.innerHTML = `
+        <div style="background: #f0f8ff; padding: 15px; border-radius: 6px; margin-top: 15px;">
+          <strong>Actual Totals:</strong> $${actualTotal.toFixed(2)}<br>
+          <strong>Projected Totals:</strong> $${projectedTotal.toFixed(2)}<br>
+          <strong>Outstanding:</strong> $${(projectedTotal - actualTotal).toFixed(2)}
+        </div>
+      `;
+    }
+
+    function loadParkReport() {
+      const rallyId = parseInt(document.getElementById("parkReportRally").value);
+      const table = document.getElementById("parkReportTable");
+      const header = document.getElementById("parkReportHeader");
+
+      table.innerHTML = `<tr><th style="width: 32%;">Name</th><th style="width: 7%;">Adult</th><th style="width: 7%;">Van</th><th style="width: 15%;">Mobile</th><th style="width: 20%;">Email</th><th style="width: 10%;">Van Length</th><th style="width: 9%;">Postcode</th></tr>`;
+      header.innerHTML = "";
+
+      if (!rallyId) return;
+
+      const rally = rallies.find(r => r.id == rallyId);
+      if (!rally) return;
+
+      const attendeeList = attendees[rallyId] || [];
+      let adultCount = 0, vanCount = 0;
+
+      console.log("Park Report Debug - DETAILED:", {
+        rallyId: rallyId,
+        rallyIdType: typeof rallyId,
+        rally: rally,
+        attendeesObject: attendees,
+        attendeeList: attendeeList,
+        attendeeCount: attendeeList.length,
+        allRallyIds: Object.keys(attendees)
+      });
+
+      // Count adults and vans - note Adult can be 1 or 2
+      attendeeList.forEach(a => {
+        const member = members.find(m => m.id === a.memberId);
+        if (!member) return;
+        const adultNum = parseInt(member.adult) || 0;
+        if (adultNum >= 1) adultCount += adultNum; // Add the number (1 or 2)
+        if (member.van == "1") vanCount++;
+      });
+
+      // NEW COMPACT HEADER - Logo & Name on Left, Rally Info on Right
+      header.innerHTML = `
+        <div class="reportHeader" style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; page-break-inside: avoid; border-bottom: 3px solid #1f4fa8; padding-bottom: 15px;">
+          
+          <!-- LEFT SIDE: Logo & Club Name -->
+          <div style="flex: 0 0 45%; text-align: left;">
+            ${clubSettings.logo ? `<img src="${clubSettings.logo}" style="max-width: 150px; max-height: 80px; margin-bottom: 8px;">` : ''}
+            <h1 style="font-size: 16pt; margin: 5px 0; color: #1f4fa8; font-weight: bold;">${clubSettings.name}</h1>
+          </div>
+          
+          <!-- RIGHT SIDE: Rally Details + Adults/Vans -->
+          <div style="flex: 0 0 50%; text-align: right; font-size: 11pt;">
+            <div style="margin-bottom: 6px;"><strong>Rally:</strong> ${rally.name}</div>
+            <div style="margin-bottom: 6px;"><strong>Dates:</strong> ${formatDate(rally.start)} to ${formatDate(rally.finish)}</div>
+            <div style="margin-bottom: 6px;"><strong>Coordinator:</strong> ${rally.coordinatorName || 'N/A'}</div>
+            <div style="margin-bottom: 6px;"><strong>Mobile:</strong> ${rally.coordinatorMobile || 'N/A'}</div>
+            <div style="margin-bottom: 10px;"><strong>Email:</strong> ${rally.coordinatorEmail || 'N/A'}</div>
+            <div style="font-size: 14pt; font-weight: bold; color: #1f4fa8;">
+              <strong>Adults:</strong> ${adultCount} &nbsp;&nbsp; <strong>Vans:</strong> ${vanCount}
+            </div>
+          </div>
+          
+        </div>
+      `;
+
+      if (attendeeList.length === 0) {
+        const row = table.insertRow();
+        const cell = row.insertCell();
+        cell.colSpan = 7;
+        cell.style.textAlign = "center";
+        cell.style.padding = "20px";
+        cell.style.color = "red";
+        cell.style.fontWeight = "bold";
+        cell.textContent = "⚠️ No attendees marked for this rally. Go to Attendees section and check the boxes!";
+        return;
+      }
+
+      // Only show ATTENDEES (not all members) - NO BORDERS between rows for compact printing
+      attendeeList.forEach(a => {
+        const member = members.find(m => m.id === a.memberId);
+        if (!member) return;
+        const row = document.createElement("tr");
+        row.style.borderBottom = "1px solid #e0e0e0"; // Thin subtle line instead of thick border
+        row.innerHTML = `
+          <td style="padding: 6px 8px;">${member.name}</td>
+          <td style="padding: 6px 8px; text-align: center;">${member.adult}</td>
+          <td style="padding: 6px 8px; text-align: center;">${member.van}</td>
+          <td style="padding: 6px 8px;">${member.mobile}</td>
+          <td style="padding: 6px 8px;">${member.email}</td>
+          <td style="padding: 6px 8px; text-align: center;">${member.vanLength}</td>
+          <td style="padding: 6px 8px; text-align: center;">${member.postcode}</td>
+        `;
+        table.appendChild(row);
+      });
+    }
+
+    function loadSummaryYearDropdown() {
+      const dropdown = document.getElementById("summaryYear");
+      if (!dropdown) return;
+      dropdown.innerHTML = `<option value="">-- Select Year --</option>`;
+
+      const years = new Set();
+      rallies.forEach(r => {
+        if (r.start) {
+          const year = new Date(r.start).getFullYear();
+          if (!isNaN(year)) years.add(year);
+        }
+      });
+
+      [...years].sort().reverse().forEach(y => {
+        const opt = document.createElement("option");
+        opt.value = y;
+        opt.textContent = y;
+        dropdown.appendChild(opt);
+      });
+      
+      const currentYear = new Date().getFullYear();
+      if (years.has(currentYear)) {
+        dropdown.value = currentYear;
+        loadYearlySummary();
+      }
+    }
+
+    function loadYearlySummary() {
+      const year = document.getElementById("summaryYear").value;
+      const header = document.getElementById("summaryHeader");
+      const table = document.getElementById("yearlySummaryTable");
+      const totals = document.getElementById("yearlyTotals");
+
+      table.innerHTML = `<tr><th>Rally Name</th><th>Start</th><th>Finish</th><th>Attendees</th><th>Projected Park Fee</th><th>Projected Other</th><th>Total</th></tr>`;
+
+      if (!year) {
+        header.textContent = "";
+        totals.textContent = "";
+        return;
+      }
+
+      header.textContent = `Summary for ${year}`;
+
+      let yearlyParkFees = 0, yearlyOtherFees = 0, totalAttendees = 0;
+      const yearRallies = rallies.filter(r => new Date(r.start).getFullYear() == year);
+      
+      if (yearRallies.length === 0) {
+        totals.innerHTML = `<p style="text-align: center; padding: 20px;">No rallies for ${year}</p>`;
+        return;
+      }
+
+      yearRallies.forEach(rally => {
+        const rallyId = rally.id;
+        const attendeeList = attendees[rallyId] || [];
+
+        const parkValues = attendeeList.filter(a => a.parkFee > 0).map(a => a.parkFee);
+        const otherValues = attendeeList.filter(a => a.otherFee > 0).map(a => a.otherFee);
+
+        const avgPark = parkValues.length ? parkValues.reduce((a,b)=>a+b,0) / parkValues.length : 0;
+        const avgOther = otherValues.length ? otherValues.reduce((a,b)=>a+b,0) / otherValues.length : 0;
+
+        let projectedPark = 0, projectedOther = 0;
+        attendeeList.forEach(a => {
+          projectedPark += a.parkFee > 0 ? a.parkFee : avgPark;
+          projectedOther += a.otherFee > 0 ? a.otherFee : avgOther;
+        });
+
+        const projectedTotal = projectedPark + projectedOther;
+
+        yearlyParkFees += projectedPark;
+        yearlyOtherFees += projectedOther;
+        totalAttendees += attendeeList.length;
+
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td>${rally.name}</td>
+          <td>${formatDate(rally.start)}</td>
+          <td>${formatDate(rally.finish)}</td>
+          <td>${attendeeList.length}</td>
+          <td>$${projectedPark.toFixed(2)}</td>
+          <td>$${projectedOther.toFixed(2)}</td>
+          <td><strong>$${projectedTotal.toFixed(2)}</strong></td>
+        `;
+        table.appendChild(row);
+      });
+
+      const yearlyTotal = yearlyParkFees + yearlyOtherFees;
+
+      totals.innerHTML = `
+        <div style="background: #f0f8ff; padding: 15px; border-radius: 6px; margin-top: 15px;">
+          <strong>Year ${year} Totals</strong><br>
+          Rallies: ${yearRallies.length} | Attendees: ${totalAttendees}<br>
+          <strong>Projected Park:</strong> $${yearlyParkFees.toFixed(2)} | 
+          <strong>Projected Other:</strong> $${yearlyOtherFees.toFixed(2)} | 
+          <strong>Total:</strong> $${yearlyTotal.toFixed(2)}
+        </div>
+      `;
+    }
+
+    // NOMINATION LIST
+    function loadNominationList() {
+      const rallyId = parseInt(document.getElementById("nominationRally").value);
+      const table = document.getElementById("nominationTable");
+      const header = document.getElementById("nominationHeader");
+
+      table.innerHTML = `<tr><th style="width: 60%;">Member Name</th><th style="width: 20%; text-align: center;">YES</th><th style="width: 20%; text-align: center;">NO</th></tr>`;
+      header.innerHTML = "";
+
+      if (!rallyId) return;
+
+      const rally = rallies.find(r => r.id == rallyId);
+      if (!rally) return;
+
+      // Ultra-compact header with logo on left, info on right
+      header.innerHTML = `
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; margin: 5px 0 8px 0; padding: 10px; background: white; border-radius: 6px; border: 2px solid #1f4fa8; page-break-inside: avoid;">
+          <!-- LEFT: Logo & Club Name -->
+          <div style="flex: 0 0 30%; text-align: left;">
+            ${clubSettings.logo ? `<img src="${clubSettings.logo}" style="max-width: 100px; max-height: 50px; margin-bottom: 4px;">` : ''}
+            <div style="color: #1f4fa8; margin: 2px 0; font-size: 11pt; font-weight: bold; line-height: 1.2;">${clubSettings.name}</div>
+          </div>
+          
+          <!-- RIGHT: Rally Details -->
+          <div style="flex: 0 0 65%; text-align: right;">
+            <div style="color: #1f4fa8; margin: 0 0 4px 0; font-size: 13pt; font-weight: bold; line-height: 1.2;">Nomination List for:</div>
+            <div style="font-size: 12pt; font-weight: bold; margin-bottom: 3px; line-height: 1.2;">
+              ${rally.name}
+            </div>
+            <div style="font-size: 10pt; margin-bottom: 4px; line-height: 1.2;">
+              ${formatDate(rally.start)} to ${formatDate(rally.finish)}
+            </div>
+            <div style="font-size: 9pt; color: #666; font-style: italic; line-height: 1.2;">
+              Please tick YES or NO to indicate attendance
+            </div>
+          </div>
+        </div>
+      `;
+
+      // Show all members with minimal spacing - ULTRA COMPACT
+      members.forEach(member => {
+        const row = document.createElement("tr");
+        row.style.height = "28px"; // Reduced from 35px
+        
+        // Name cell - no border, minimal padding
+        const nameCell = row.insertCell();
+        nameCell.textContent = member.name;
+        nameCell.style.padding = "3px 6px"; // Reduced from 6px 8px
+        nameCell.style.border = "none";
+        nameCell.style.fontSize = "10pt";
+        nameCell.style.lineHeight = "1.1";
+        
+        // YES cell with smaller box - no border
+        const yesCell = row.insertCell();
+        yesCell.style.textAlign = "center";
+        yesCell.style.border = "none";
+        yesCell.style.padding = "3px";
+        yesCell.innerHTML = `<div style="display: inline-block; width: 24px; height: 24px; border: 2px solid #333;"></div>`;
+        
+        // NO cell with smaller box - no border
+        const noCell = row.insertCell();
+        noCell.style.textAlign = "center";
+        noCell.style.border = "none";
+        noCell.style.padding = "3px";
+        noCell.innerHTML = `<div style="display: inline-block; width: 24px; height: 24px; border: 2px solid #333;"></div>`;
+        
+        table.appendChild(row);
+      });
+    }
+
+    // FOLLOW-UP REPORT
+    function loadFollowupReport() {
+      const rallyId = parseInt(document.getElementById("followupRally").value);
+      const table = document.getElementById("followupTable");
+      const header = document.getElementById("followupHeader");
+
+      table.innerHTML = `<tr><th style="width: 40%;">Member Name</th><th style="width: 15%;">Mobile</th><th style="width: 25%;">Email</th><th style="width: 20%;">Status</th></tr>`;
+      header.innerHTML = "";
+
+      if (!rallyId) {
+        document.getElementById("attendingCount").textContent = "0";
+        document.getElementById("notAttendingCount").textContent = "0";
+        document.getElementById("noResponseCount").textContent = "0";
+        return;
+      }
+
+      const rally = rallies.find(r => r.id == rallyId);
+      if (!rally) return;
+
+      // Header with rally info
+      header.innerHTML = `
+        <div style="text-align: center; margin: 15px 0; padding: 15px; background: white; border-radius: 6px; border: 2px solid #1f4fa8;">
+          <h3 style="color: #1f4fa8; margin: 0 0 8px 0;">Follow-up Report: ${rally.name}</h3>
+          <div style="font-size: 11pt; color: #666;">
+            ${formatDate(rally.start)} to ${formatDate(rally.finish)}
+          </div>
+        </div>
+      `;
+
+      const attendeeList = attendees[rallyId] || [];
+      const notAttendingList = notAttending[rallyId] || [];
+      const attendingMemberIds = attendeeList.map(a => a.memberId);
+      
+      let attending = [];
+      let notAttendingMembers = [];
+      let noResponse = [];
+
+      // Categorize all members
+      members.forEach(member => {
+        if (attendingMemberIds.includes(member.id)) {
+          attending.push(member);
+        } else if (notAttendingList.includes(member.id)) {
+          notAttendingMembers.push(member);
+        } else {
+          noResponse.push(member);
+        }
+      });
+
+      // Update counts
+      document.getElementById("attendingCount").textContent = attending.length;
+      document.getElementById("notAttendingCount").textContent = notAttendingMembers.length;
+      document.getElementById("noResponseCount").textContent = noResponse.length;
+
+      // Show ATTENDING members (green)
+      attending.forEach(member => {
+        const row = document.createElement("tr");
+        row.style.backgroundColor = "#d4edda";
+        row.innerHTML = `
+          <td style="padding: 8px;">${member.name}</td>
+          <td style="padding: 8px;">${member.mobile}</td>
+          <td style="padding: 8px;">${member.email}</td>
+          <td style="padding: 8px; text-align: center;"><strong style="color: #155724;">✅ Attending</strong></td>
+        `;
+        table.appendChild(row);
+      });
+
+      // Show NOT ATTENDING members (red)
+      notAttendingMembers.forEach(member => {
+        const row = document.createElement("tr");
+        row.style.backgroundColor = "#f8d7da";
+        row.innerHTML = `
+          <td style="padding: 8px;">${member.name}</td>
+          <td style="padding: 8px;">${member.mobile}</td>
+          <td style="padding: 8px;">${member.email}</td>
+          <td style="padding: 8px; text-align: center;"><strong style="color: #721c24;">❌ Not Attending</strong></td>
+        `;
+        table.appendChild(row);
+      });
+
+      // Show NO RESPONSE members (yellow) - THESE ARE WHO YOU NEED TO FOLLOW UP!
+      noResponse.forEach(member => {
+        const row = document.createElement("tr");
+        row.style.backgroundColor = "#fff3cd";
+        row.innerHTML = `
+          <td style="padding: 8px;">${member.name}</td>
+          <td style="padding: 8px;"><strong>${member.mobile}</strong></td>
+          <td style="padding: 8px;"><strong>${member.email}</strong></td>
+          <td style="padding: 8px; text-align: center;"><strong style="color: #856404;">⏳ No Response - FOLLOW UP!</strong></td>
+        `;
+        table.appendChild(row);
+      });
+
+      if (members.length === 0) {
+        const row = table.insertRow();
+        const cell = row.insertCell();
+        cell.colSpan = 4;
+        cell.style.textAlign = "center";
+        cell.style.padding = "20px";
+        cell.textContent = "No members found.";
+      }
+    }
+
+    // DASHBOARD
+    function loadDashboard() {
+      document.getElementById("dashTotalMembers").textContent = members.length;
+
+      // Populate rally selector dropdown
+      const rallySelector = document.getElementById("dashboardRallySelector");
+      rallySelector.innerHTML = `<option value="">-- Next Rally --</option>`;
+      rallies.forEach(r => {
+        const opt = document.createElement("option");
+        opt.value = r.id;
+        opt.textContent = `${r.name} (${formatDate(r.start)})`;
+        rallySelector.appendChild(opt);
+      });
+
+      // Sort rallies by start date to find next one (same order as rally table)
+      const sortedRallies = [...rallies].sort((a, b) => new Date(a.start) - new Date(b.start));
+      const today = new Date();
+      
+      // Find next rally (first one with start date >= today, or if none, show the last/latest rally)
+      let nextRally = sortedRallies.find(r => new Date(r.start) >= today);
+      if (!nextRally && sortedRallies.length > 0) {
+        nextRally = sortedRallies[sortedRallies.length - 1]; // Show most recent if no upcoming
+      }
+
+      // Show next rally info
+      if (nextRally) {
+        document.getElementById("dashNextRally").innerHTML = `<strong>${nextRally.name}</strong><br>${formatDate(nextRally.start)} to ${formatDate(nextRally.finish)}`;
+        
+        // Auto-select next rally in dropdown
+        rallySelector.value = nextRally.id;
+        
+        // Show attendance and fees for next rally
+        updateDashboardForRally();
+      } else {
+        document.getElementById("dashNextRally").textContent = "No rallies yet";
+        document.getElementById("dashAttendanceRally").textContent = "0";
+        document.getElementById("dashProjectedFees").textContent = "$0.00";
+        document.getElementById("dashAttendanceTitle").textContent = "📊 Attendance This Rally";
+        document.getElementById("dashFeesTitle").textContent = "💰 Projected Fees";
+      }
+      
+      // Update backup status display
+      updateBackupStatus();
+    }
+    
+    function updateDashboardForRally() {
+      const rallySelector = document.getElementById("dashboardRallySelector");
+      const rallyId = parseInt(rallySelector.value);
+      
+      if (!rallyId) {
+        // Show next rally if no selection
+        loadDashboard();
+        return;
+      }
+      
+      const rally = rallies.find(r => r.id === rallyId);
+      if (!rally) return;
+      
+      const rallyAttendees = attendees[rallyId] || [];
+      let adults = 0, vans = 0;
+      let projectedParkFees = 0, projectedOtherFees = 0;
+      
+      // Calculate attendance
+      rallyAttendees.forEach(a => {
+        const member = members.find(m => m.id === a.memberId);
+        if (member) {
+          const adultNum = parseInt(member.adult) || 0;
+          adults += adultNum;
+          if (member.van == "1") vans++;
+        }
+      });
+      
+      // Calculate fees
+      const parkValues = rallyAttendees.filter(a => a.parkFee > 0).map(a => a.parkFee);
+      const otherValues = rallyAttendees.filter(a => a.otherFee > 0).map(a => a.otherFee);
+      const avgPark = parkValues.length ? parkValues.reduce((a,b)=>a+b,0) / parkValues.length : 0;
+      const avgOther = otherValues.length ? otherValues.reduce((a,b)=>a+b,0) / otherValues.length : 0;
+
+      rallyAttendees.forEach(a => {
+        projectedParkFees += (a.parkFee > 0 ? a.parkFee : avgPark);
+        projectedOtherFees += (a.otherFee > 0 ? a.otherFee : avgOther);
+      });
+      
+      const projectedTotal = projectedParkFees + projectedOtherFees;
+      
+      // Update titles with rally name
+      document.getElementById("dashAttendanceTitle").textContent = `📊 Attendance - ${rally.name}`;
+      document.getElementById("dashFeesTitle").textContent = `💰 Projected Fees - ${rally.name}`;
+      
+      // Update attendance display
+      if (rallyAttendees.length > 0) {
+        document.getElementById("dashAttendanceRally").innerHTML = `
+          <div style="font-size: 13pt; line-height: 1.8;">
+            Adults: <strong>${adults}</strong><br>
+            Vans: <strong>${vans}</strong>
+          </div>
+        `;
+      } else {
+        document.getElementById("dashAttendanceRally").textContent = "0";
+      }
+      
+      // Update fees display
+      document.getElementById("dashProjectedFees").innerHTML = `
+        <div style="font-size: 11pt; line-height: 1.8;">
+          Park: $${projectedParkFees.toFixed(2)}<br>
+          Other: $${projectedOtherFees.toFixed(2)}
+          <div style="margin-top: 5px; padding-top: 5px; border-top: 2px solid #1f4fa8;">
+            <strong style="font-size: 14pt;">$${projectedTotal.toFixed(2)}</strong>
+          </div>
+        </div>
+      `;
+    }
+    
+    function updateBackupStatus() {
+      const statusDiv = document.getElementById("backupStatus");
+      if (!statusDiv) return;
+      
+      if (!lastBackupDate) {
+        statusDiv.style.background = "#ffe6e6";
+        statusDiv.style.color = "#cc0000";
+        statusDiv.innerHTML = "⚠️ No backup created yet! Click 'Download Backup' button above.";
+        return;
+      }
+      
+      const daysSince = Math.floor((Date.now() - new Date(lastBackupDate)) / (1000 * 60 * 60 * 24));
+      const lastBackupFormatted = new Date(lastBackupDate).toLocaleDateString('en-AU', { 
+        day: '2-digit', 
+        month: 'short', 
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+      
+      if (daysSince >= 30) {
+        statusDiv.style.background = "#ffe6e6";
+        statusDiv.style.color = "#cc0000";
+        statusDiv.innerHTML = `🚨 URGENT: Last backup ${daysSince} days ago (${lastBackupFormatted})`;
+      } else if (daysSince >= 14) {
+        statusDiv.style.background = "#fff3cd";
+        statusDiv.style.color = "#856404";
+        statusDiv.innerHTML = `⚠️ Last backup ${daysSince} days ago (${lastBackupFormatted})`;
+      } else if (daysSince >= 7) {
+        statusDiv.style.background = "#e7f3ff";
+        statusDiv.style.color = "#004085";
+        statusDiv.innerHTML = `💾 Last backup ${daysSince} days ago (${lastBackupFormatted})`;
+      } else {
+        statusDiv.style.background = "#d4edda";
+        statusDiv.style.color = "#155724";
+        statusDiv.innerHTML = `✅ Last backup ${daysSince} day${daysSince !== 1 ? 's' : ''} ago (${lastBackupFormatted})`;
+      }
+    }
+
+    // UTILITIES
+    function formatDate(dateStr) {
+      if (!dateStr) return "";
+      const date = new Date(dateStr);
+      return date.toLocaleDateString('en-AU', { day: '2-digit', month: 'short', year: 'numeric' });
+    }
+
+    // CLUB SETTINGS
+    function saveClubSettings() {
+      clubSettings.name = document.getElementById("clubName").value.trim() || "Carefree Caravaneers Club of SA Inc";
+      saveData();
+      showMessage("✅ Club settings saved!", "success");
+    }
+
+    function uploadLogo() {
+      const file = document.getElementById("clubLogoInput").files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        clubSettings.logo = e.target.result;
+        displayLogo();
+        saveData();
+        showMessage("✅ Logo uploaded!", "success");
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function removeLogo() {
+      if (confirm("Remove club logo?")) {
+        clubSettings.logo = null;
+        document.getElementById("logoPreview").style.display = "none";
+        document.getElementById("clubLogoInput").value = "";
+        saveData();
+        showMessage("✅ Logo removed!", "success");
+      }
+    }
+
+    function displayLogo() {
+      if (clubSettings.logo) {
+        document.getElementById("logoImage").src = clubSettings.logo;
+        document.getElementById("logoPreview").style.display = "block";
+      }
+    }
+
+    function loadClubSettings() {
+      document.getElementById("clubName").value = clubSettings.name;
+      displayLogo();
+    }
+
+    // START APP
+    window.onload = function() {
+      initApp();
+      // Load club settings when visiting that section
+      const observer = new MutationObserver(() => {
+        if (!document.getElementById("clubSettingsSection").classList.contains("hidden")) {
+          loadClubSettings();
+        }
+      });
+    };
+  </script>
+
+  <style media="print">
+    .reportHeader {
+      text-align: center;
+      margin-bottom: 30px;
+      page-break-inside: avoid;
+    }
+    .reportHeader img {
+      max-width: 200px;
+      max-height: 100px;
+      margin-bottom: 10px;
+    }
+    .reportHeader h1 {
+      font-size: 18pt;
+      margin: 5px 0;
+    }
+    .reportHeader .rallyInfo {
+      font-size: 12pt;
+      margin: 10px 0;
+    }
+    .reportHeader .counts {
+      font-size: 14pt;
+      font-weight: bold;
+      margin: 15px 0;
+    }
+  </style>
+
+</body>
+</html>
