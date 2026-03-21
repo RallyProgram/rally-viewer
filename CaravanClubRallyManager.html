@@ -3243,8 +3243,8 @@
         .filter(m => m);
       let vanCount = 0, adultCount = 0;
       attendingMembers.forEach(m => {
-        vanCount  += parseInt(m.vans)   || 0;
-        adultCount += parseInt(m.adults) || 0;
+        if (m.van == "1") vanCount++;
+        adultCount += parseInt(m.adult) || 0;
       });
       let totalParkFees = 0, totalOtherFees = 0, parkFeePerNight = 0;
       attendeeList.forEach(a => {
@@ -3362,8 +3362,8 @@
       
       let vanCount = 0, adultCount = 0;
       attendingMembers.forEach(m => {
-        vanCount += parseInt(m.vans) || 0;
-        adultCount += parseInt(m.adults) || 0;
+        if (m.van == "1") vanCount++;
+        adultCount += parseInt(m.adult) || 0;
       });
       
       let totalParkFees = 0, totalOtherFees = 0;
