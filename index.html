@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Rally Manager">
@@ -918,6 +918,20 @@
       .formRow .memberIceFields input { width:100%; }
     }
 </style>
+<style>
+    /* Phone navigation: keep the selected screen reachable in portrait. */
+    #mobileMenuToggle { display:none; }
+    @media screen and (max-width:768px) {
+      header { position:static; padding:12px; }
+      #mobileMenuToggle { display:block; width:100%; min-height:44px; margin-bottom:8px; padding:10px; border:1px solid white; border-radius:6px; background:white; color:#1f4fa8; font-size:16px; text-align:left; }
+      header nav { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px; max-height:34vh; overflow-y:auto; overflow-x:hidden; padding:2px 2px 6px; }
+      header nav button { width:100%; min-width:0; min-height:44px; padding:9px 6px; font-size:13px; white-space:normal; overflow-wrap:anywhere; }
+      header.mobile-menu-collapsed nav { display:none; }
+      main section { scroll-margin-top:12px; }
+      .formRow > input, .formRow > select, .formRow > textarea { max-width:100%; min-width:0; box-sizing:border-box; }
+      #dashboardRallySelector { min-width:0 !important; max-width:100%; }
+    }
+  </style>
 </head>
 <body>
 
@@ -927,7 +941,8 @@
     <!-- Hidden file input for iOS compatibility -->
     <input type="file" id="restoreFileInput" accept=".json,application/json" style="display: none;" onchange="handleRestoreFile(this)">
     
-    <nav>
+    <button type="button" id="mobileMenuToggle" aria-expanded="true" aria-controls="mainNavigation" onclick="toggleMobileMenu()">☰ Menu — choose a screen</button>
+    <nav id="mainNavigation">
       <button onclick="showSection('dashboardSection')">📊 Dashboard</button>
       <button onclick="showSection('memberSection')">👥 Members</button>
       <button onclick="showSection('createRallySection')">📅 Rallies</button>
@@ -3742,6 +3757,11 @@
     }
 
     // NAVIGATION
+    function toggleMobileMenu() {
+      const header = document.querySelector('header');
+      const collapsed = header.classList.toggle('mobile-menu-collapsed');
+      document.getElementById('mobileMenuToggle').setAttribute('aria-expanded', String(!collapsed));
+    }
     function showSection(id) {
       document.querySelectorAll("main section").forEach(sec => sec.classList.add("hidden"));
       const el = document.getElementById(id);
@@ -3754,6 +3774,14 @@
         if (id === "photoDirectorySection") generatePhotoDirectory();
         if (id === "programReportSection") initProgramReport();
         if (id === "forwardMatrixSection") generateForwardMatrix();
+        if (window.matchMedia('(max-width:768px)').matches) {
+          document.querySelector('header').classList.add('mobile-menu-collapsed');
+          const menu = document.getElementById('mobileMenuToggle');
+          menu.setAttribute('aria-expanded', 'false');
+          const heading = el.querySelector('h2');
+          menu.textContent = '☰ Menu — ' + (heading ? heading.textContent.trim() : 'choose a screen');
+          requestAnimationFrame(() => el.scrollIntoView({block:'start'}));
+        }
       }
     }
 
