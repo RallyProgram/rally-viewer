@@ -1974,7 +1974,9 @@
           <button onclick="printAccsaReport()" class="btn-primary">🖨️ Print ACCSA Report</button>
           <button onclick="exportAccsaWord()" class="btn-secondary">📄 Export to Word</button>
           <button onclick="copyAccsaText()" class="btn-secondary">📋 Copy to Clipboard</button>
+          <button onclick="toggleSavedAccsaReports()" class="btn-secondary">🗂️ Saved Reports</button>
         </div>
+        <div id="savedAccsaReports" style="display:none;margin-top:12px;padding:12px;background:#f5f7fa;border:1px solid #ccd4df;border-radius:6px;"></div>
         
         <p style="margin-top: 10px; color: #666; font-size: 0.9em;">
           💡 Fill in the details above, then click "Print ACCSA Report" for a complete, ready-to-submit report.
@@ -6286,6 +6288,7 @@ notes: m.notes || "",
       const rallyId = parseInt(document.getElementById("accsaRally").value);
       if (!rallyId) return;
       accsaNotes[rallyId] = {
+        ...(accsaNotes[rallyId] || {}),
         onArrival:     document.getElementById("accsaOnArrival").value,
         parkSurrounds: document.getElementById("accsaParkSurrounds").value,
         activities:    document.getElementById("accsaActivities").value,
@@ -6386,6 +6389,7 @@ notes: m.notes || "",
       // STEP 2: Show panel and build preview from the now-populated textareas
       output.style.display = "block";
       updateAccsaPreview(rallyId);
+      renderSavedAccsaReports();
     }
     
     function getNextRally(currentRallyId) {
@@ -6473,15 +6477,14 @@ notes: m.notes || "",
       const activities = document.getElementById("accsaActivities")?.value || '';
       const recommended = document.getElementById("accsaRecommended")?.value || '';
       
-      const printWindow = window.open('', '_blank');
-      printWindow.document.write(`
+      const reportHtml = `
         <!DOCTYPE html>
         <html>
         <head>
           <title>ACCSA Report - ${rally.name}</title>
           <script>window.onload = function() { window.print(); };<\/script>
           <style>
-            @page { margin: 0.5in; size: A4 portrait; }
+            @page { margin: 0; size: A4 portrait; }
             @media print {
               * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             }
@@ -6490,7 +6493,8 @@ notes: m.notes || "",
               font-size: 10pt;
               line-height: 1.4;
               margin: 0;
-              padding: 0;
+              padding: 0.5in;
+              box-sizing: border-box;
             }
             .logo-container {
               float: left;
@@ -6559,8 +6563,68 @@ notes: m.notes || "",
           </div>
         </body>
         </html>
-      `);
+      `;
+      saveAccsaReportSnapshot(rally, reportHtml);
+      const printWindow = window.open('', '_blank');
+      if (!printWindow) {
+        showMessage("❌ Please allow pop-ups to print the ACCSA report. It was saved to Saved Reports.", "error");
+        return;
+      }
+      printWindow.document.open();
+      printWindow.document.write(reportHtml);
       printWindow.document.close();
+    }
+
+
+    // Store completed reports with ACCSA notes so the existing central snapshot sync carries them across devices.
+    function getSavedAccsaReports(rallyId) {
+      const reports = accsaNotes[rallyId]?.savedReports;
+      return Array.isArray(reports) ? reports : [];
+    }
+
+    function saveAccsaReportSnapshot(rally, html) {
+      if (!rally || !html) return;
+      const current = accsaNotes[rally.id] || {};
+      accsaNotes[rally.id] = {
+        ...current,
+        savedReports: [{ savedAt: new Date().toISOString(), html }, ...getSavedAccsaReports(rally.id)].slice(0, 5)
+      };
+      saveData();
+      renderSavedAccsaReports();
+      showMessage("✅ ACCSA report saved. It will sync through the central database when connected.", "success");
+    }
+
+    function toggleSavedAccsaReports() {
+      const panel = document.getElementById("savedAccsaReports");
+      if (!panel) return;
+      panel.style.display = panel.style.display === "none" ? "block" : "none";
+      if (panel.style.display === "block") renderSavedAccsaReports();
+    }
+
+    function renderSavedAccsaReports() {
+      const panel = document.getElementById("savedAccsaReports");
+      const rallyId = parseInt(document.getElementById("accsaRally")?.value);
+      if (!panel || !rallyId) return;
+      const reports = getSavedAccsaReports(rallyId);
+      if (!reports.length) {
+        panel.innerHTML = '<strong>No saved ACCSA reports for this rally yet.</strong>';
+        return;
+      }
+      panel.innerHTML = '<strong>Saved ACCSA Reports</strong><ul style="margin:8px 0 0;padding-left:22px;">' + reports.map((r, i) =>
+        '<li style="margin:5px 0;"><button class="btn-secondary" onclick="openSavedAccsaReport(' + i + ')">' +
+        'Report saved ' + new Date(r.savedAt).toLocaleString() + '</button></li>'
+      ).join('') + '</ul><small>Up to 5 saved versions per rally. Reports are included in the central rally data sync.</small>';
+    }
+
+    function openSavedAccsaReport(index) {
+      const rallyId = parseInt(document.getElementById("accsaRally")?.value);
+      const report = getSavedAccsaReports(rallyId)[index];
+      if (!report) return;
+      const reportWindow = window.open('', '_blank');
+      if (!reportWindow) { showMessage("❌ Please allow pop-ups to open the saved report.", "error"); return; }
+      reportWindow.document.open();
+      reportWindow.document.write(report.html);
+      reportWindow.document.close();
     }
 
     // EXPORT ACCSA REPORT TO WORD
